@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vehicles</title>
+</head>
+<body>
+<h1>Список автомобилей</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Гос. номер</th>
+        <th>Пробег</th>
+        <th>Год выпуска</th>
+        <th>Цвет</th>
+        <th>Цена покупки</th>
+    </tr>
+    <tr th:each="vehicle : ${vehicles}">
+        <td th:text="${vehicle.getId()}"/>
+        <td th:text="${vehicle.getLicensePlateNumber()}"/>
+        <td th:text="${vehicle.getMileage()}"/>
+        <td th:text="${vehicle.getProductionYear()}"/>
+        <td th:text="${vehicle.getColor()}"/>
+        <td th:text="${vehicle.getPurchasePrice()}"/>
+    </tr>
+</table>
+</body>
+</html>
