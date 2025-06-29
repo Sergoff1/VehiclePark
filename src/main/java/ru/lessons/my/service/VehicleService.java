@@ -13,7 +13,7 @@ public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
 
-    public List<Vehicle> getAll() {
+    public List<Vehicle> findAll() {
         return vehicleRepository.findAll();
     }
 }

@@ -9,6 +9,7 @@
 <table>
     <tr>
         <th>ID</th>
+        <th>Марка и модель</th>
         <th>Гос. номер</th>
         <th>Пробег</th>
         <th>Год выпуска</th>
@@ -17,11 +18,12 @@
     </tr>
     <tr th:each="vehicle : ${vehicles}">
         <td th:text="${vehicle.getId()}"/>
+        <td th:text="${vehicle.getModel().getBrandName() + ' ' + vehicle.getModel().getModelName()}"/>
         <td th:text="${vehicle.getLicensePlateNumber()}"/>
-        <td th:text="${vehicle.getMileage()}"/>
+        <td th:text="${vehicle.getMileageKm()}"/>
         <td th:text="${vehicle.getProductionYear()}"/>
         <td th:text="${vehicle.getColor()}"/>
-        <td th:text="${vehicle.getPurchasePrice()}"/>
+        <td th:text="${vehicle.getPurchasePriceRub()}"/>
     </tr>
 </table>
 </body>

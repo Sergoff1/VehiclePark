@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +24,10 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "vehicle_model_id", nullable = false)
+    private VehicleModel model;
+
     @Column(name = "license_plate_number", unique = true, nullable = false)
     private String licensePlateNumber;
 
@@ -29,15 +35,15 @@ public class Vehicle {
     @Min(value = 1885, message = "Первый автомобиль выпустили в 1885")
     private int productionYear;
 
-    @Column(nullable = false)
+    @Column(name = "mileage", nullable = false)
     @Min(value = 0, message = "Пробег не может быть отрицательным")
-    private int mileage;
+    private int mileageKm;
 
     @Column(nullable = false)
     private String color;
 
     @Column(name = "purchase_price", nullable = false)
     @Min(value = 0, message = "Цена не может быть отрицательной")
-    private int purchasePrice;
+    private int purchasePriceRub;
 
 }
