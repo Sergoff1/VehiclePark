@@ -32,7 +32,9 @@ public class VehicleRepository {
     }
 
     @Transactional
-    public void delete(Vehicle vehicle) {
-        entityManager.remove(vehicle);
+    public void deleteById(Long id) {
+        entityManager.createQuery("delete from Vehicle where id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
     }
 }

@@ -16,4 +16,16 @@ public class VehicleModelService {
     public List<VehicleModel> findAll() {
         return vehicleModelRepository.findAll();
     }
+
+    public VehicleModel findById(Long id) {
+        return vehicleModelRepository.findById(id);
+    }
+
+    public void save(VehicleModel vehicleModel) {
+        vehicleModelRepository.save(vehicleModel);
+    }
+
+    public void deleteById(Long id) {
+        vehicleModelRepository.deleteById(id);
+    }
 }

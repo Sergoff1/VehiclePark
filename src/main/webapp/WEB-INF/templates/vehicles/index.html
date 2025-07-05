@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>vehicles</title>
 </head>
 <body>
 <h1>Список автомобилей</h1>
-<table>
+
+<a th:href="@{/vehicles/new}">Добавить новый автомобиль</a>
+<br>
+<table border="1" cellpadding="5">
     <tr>
         <th>ID</th>
         <th>Марка и модель</th>
         <th>Гос. номер</th>
-        <th>Пробег</th>
+        <th>Пробег (км)</th>
         <th>Год выпуска</th>
         <th>Цвет</th>
         <th>Цена покупки</th>
@@ -24,6 +27,9 @@
         <td th:text="${vehicle.getProductionYear()}"/>
         <td th:text="${vehicle.getColor()}"/>
         <td th:text="${vehicle.getPurchasePriceRub()}"/>
+
+        <td><a th:href="@{/vehicles/edit/{id}(id=${vehicle.getId()})}">Edit</a></td>
+        <td><a th:href="@{/vehicles/delete/{id}(id=${vehicle.getId()})}">Delete</a></td>
     </tr>
 </table>
 </body>

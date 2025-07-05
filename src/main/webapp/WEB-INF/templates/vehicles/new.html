@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add vehicle</title>
+</head>
+<body>
+    <h1>Добавить новый автомобиль</h1>
+
+    <form th:action="@{/vehicles/new}" th:object="${vehicle}" method="post">
+        <label>Марка и модель:
+            <select name="modelId">
+                <option th:each="vehicleModel : ${models}"
+                        th:value="${vehicleModel.id}" th:text="${vehicleModel.getBrandName() + ' ' +
+                         vehicleModel.getModelName()}"></option>
+            </select>
+        </label>
+        <br/>
+        <label>Гос. номер: <input type="text" th:field="*{licensePlateNumber}"/></label><br/>
+        <label>Пробег (км): <input type="number" th:field="*{mileageKm}"/></label><br/>
+        <label>Год выпуска: <input type="number" th:field="*{productionYear}"/></label><br/>
+        <label>Цвет: <input type="text" th:field="*{color}"/></label><br/>
+        <label>Цена покупки: <input type="number" th:field="*{purchasePriceRub}"/></label><br/>
+        <button type="submit">Добавить</button>
+    </form>
+</body>
+</html>

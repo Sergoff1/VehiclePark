@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>edit model</title>
+</head>
+<body>
+    <h1>Изменить модель</h1>
+    <form th:action="@{'/models/edit/' + ${vehicleModel.id}}" th:object="${vehicleModel}" method="post">
+        <label>Марка: <input type="text" th:field="*{brandName}"/></label><br/>
+        <label>Модель: <input type="text" th:field="*{modelName}"/></label><br/>
+        <label>Тип:
+            <select th:field="*{type}">
+                <option th:each="type : ${T(ru.lessons.my.model.VehicleModel.Type).values()}"
+                        th:value="${type}" th:text="${type}"></option>
+            </select>
+        </label>
+        <br/>
+        <label>Объём бака (л): <input type="number" th:field="*{fuelTankCapacity}"/></label><br/>
+        <label>Грузоподъёмность (кг): <input type="number" th:field="*{loadCapacityKg}"/></label><br/>
+        <label>Количество сидений: <input type="number" th:field="*{seatsNumber}"/></label><br/>
+        <button type="submit">Изменить</button>
+    </form>
+</body>
+</html>

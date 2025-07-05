@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>models</title>
+</head>
+<body>
+    <h1>Модели автомобилей</h1>
+
+    <a th:href="@{/models/new}">Добавить новую модель</a>
+    <br>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>ID</th>
+            <th>Марка</th>
+            <th>Модель</th>
+            <th>Тип</th>
+            <th>Объём бака</th>
+            <th>Грузоподъёмность</th>
+            <th>Количество сидений</th>
+        </tr>
+        <tr th:each="model : ${vehicleModels}">
+            <td th:text="${model.getId()}"/>
+            <td th:text="${model.getBrandName()}"/>
+            <td th:text="${model.getModelName()}"/>
+            <td th:text="${model.getType()}"/>
+            <td th:text="${model.getFuelTankCapacity()}"/>
+            <td th:text="${model.getLoadCapacityKg()}"/>
+            <td th:text="${model.getSeatsNumber()}"/>
+
+            <td><a th:href="@{/models/edit/{id}(id=${model.getId()})}">Edit</a></td>
+            <td><a th:href="@{/models/delete/{id}(id=${model.getId()})}">Delete</a></td>
+        </tr>
+    </table>
+</body>
+</html>
