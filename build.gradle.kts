@@ -22,6 +22,8 @@ dependencies {
     implementation("org.springframework:spring-webmvc:6.2.8")
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
+
     implementation("org.thymeleaf:thymeleaf-spring6:3.1.3.RELEASE")
 
     implementation("org.postgresql:postgresql:42.7.7")
