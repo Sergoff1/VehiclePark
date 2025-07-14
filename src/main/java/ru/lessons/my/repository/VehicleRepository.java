@@ -2,11 +2,14 @@ package ru.lessons.my.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import ru.lessons.my.model.Vehicle;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class VehicleRepository {
@@ -24,11 +27,17 @@ public class VehicleRepository {
     }
 
     public Vehicle findById(Long id) {
-        return entityManager.find(Vehicle.class, id);
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+
+        return entityManager.find(Vehicle.class, id, hints);
     }
 
     public List<Vehicle> findAll() {
-        return entityManager.createQuery("from Vehicle", Vehicle.class).getResultList();
+        TypedQuery<Vehicle> query = entityManager.createQuery("SELECT v FROM Vehicle v", Vehicle.class);
+        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+
+        return query.getResultList();
     }
 
     @Transactional

@@ -1,23 +1,39 @@
 package ru.lessons.my.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+        name = "Vehicle.detail",
+        attributeNodes = {
+                @NamedAttributeNode("enterprise"),
+                @NamedAttributeNode("drivers")
+        }
+)
 public class Vehicle {
 
     @Id
@@ -45,5 +61,19 @@ public class Vehicle {
     @Column(name = "purchase_price", nullable = false)
     @Min(value = 0, message = "Цена не может быть отрицательной")
     private int purchasePriceRub;
+
+    @ManyToOne
+    @JoinColumn(name = "enterprise_id", nullable = false)
+    private Enterprise enterprise;
+
+    @OneToOne
+    @JoinColumn(name = "active_driver_id", unique = true)
+    private Driver activeDriver;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="driver_vehicle",
+            joinColumns=  @JoinColumn(name="vehicle_id", referencedColumnName="id"),
+            inverseJoinColumns= @JoinColumn(name="driver_id", referencedColumnName="id") )
+    private Set<Driver> drivers = new HashSet<>();
 
 }
