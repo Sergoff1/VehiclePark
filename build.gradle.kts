@@ -24,7 +24,12 @@ dependencies {
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
 
+    implementation("org.springframework.security:spring-security-web:6.5.1")
+    implementation("org.springframework.security:spring-security-config:6.5.1")
+
     implementation("org.thymeleaf:thymeleaf-spring6:3.1.3.RELEASE")
+
+    implementation("ch.qos.logback:logback-classic:1.5.18")
 
     implementation("org.postgresql:postgresql:42.7.7")
     implementation("org.springframework:spring-orm:6.2.8")

@@ -40,6 +40,8 @@ public class Enterprise {
 
     private String city;
 
+    //todo Рассмотреть возможность использования коллекции чисел для простого хранения айдишников.
+    // Кажется, что целые сущности тут ни к чему.
     @OneToMany(mappedBy = "enterprise", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private Set<Vehicle> vehicles = new HashSet<>();
