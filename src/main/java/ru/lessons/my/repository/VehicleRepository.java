@@ -5,8 +5,11 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
+import ru.lessons.my.model.Enterprise;
 import ru.lessons.my.model.Vehicle;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +40,17 @@ public class VehicleRepository {
         TypedQuery<Vehicle> query = entityManager.createQuery("SELECT v FROM Vehicle v", Vehicle.class);
         query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
 
+        return query.getResultList();
+    }
+
+    public List<Vehicle> findByEnterprises(Collection<Enterprise> enterprises) {
+        if (enterprises == null || enterprises.isEmpty()) {
+            return Collections.emptyList();
+        }
+        TypedQuery<Vehicle> query = entityManager.createQuery(
+                "SELECT v FROM Vehicle v WHERE v.enterprise IN :enterprises", Vehicle.class);
+        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+        query.setParameter("enterprises", enterprises);
         return query.getResultList();
     }
 

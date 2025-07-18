@@ -2,9 +2,11 @@ package ru.lessons.my.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.lessons.my.model.Enterprise;
 import ru.lessons.my.model.Vehicle;
 import ru.lessons.my.repository.VehicleRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -19,6 +21,10 @@ public class VehicleService {
 
     public Vehicle findById(Long id) {
         return vehicleRepository.findById(id);
+    }
+
+    public List<Vehicle> findByEnterprises(Collection<Enterprise> enterprises) {
+        return vehicleRepository.findByEnterprises(enterprises);
     }
 
     public void save(Vehicle vehicle) {

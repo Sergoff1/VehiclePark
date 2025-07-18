@@ -6,7 +6,10 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import ru.lessons.my.model.Driver;
+import ru.lessons.my.model.Enterprise;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +40,17 @@ public class DriverRepository {
         TypedQuery<Driver> query = entityManager.createQuery("SELECT d FROM Driver d", Driver.class);
         query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
 
+        return query.getResultList();
+    }
+
+    public List<Driver> findByEnterprises(Collection<Enterprise> enterprises) {
+        if (enterprises == null || enterprises.isEmpty()) {
+            return Collections.emptyList();
+        }
+        TypedQuery<Driver> query = entityManager.createQuery(
+                "SELECT d FROM Driver d WHERE d.enterprise IN :enterprises", Driver.class);
+        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
+        query.setParameter("enterprises", enterprises);
         return query.getResultList();
     }
 

@@ -14,4 +14,5 @@ public class EnterpriseDto {
     private String city;
     private List<Long> vehicleIds;
     private List<Long> driverIds;
+    private List<Long> managerIds;
 }
