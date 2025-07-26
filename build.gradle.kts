@@ -26,6 +26,7 @@ dependencies {
 
     implementation("org.springframework.security:spring-security-web:6.5.1")
     implementation("org.springframework.security:spring-security-config:6.5.1")
+    testImplementation("org.springframework.security:spring-security-test:6.5.1")
 
     implementation("org.thymeleaf:thymeleaf-spring6:3.1.3.RELEASE")
 
@@ -41,6 +42,10 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.springframework:spring-test:6.2.8")
+    testImplementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
+    testImplementation("com.h2database:h2:2.3.232")
+    testImplementation("org.glassfish:jakarta.el:4.0.2")
 }
 
 tasks.test {
