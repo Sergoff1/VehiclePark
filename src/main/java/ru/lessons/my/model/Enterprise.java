@@ -10,6 +10,7 @@ import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,12 +21,14 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(
         name = "Enterprise.detail",
         attributeNodes = {
                 @NamedAttributeNode("drivers"),
+                @NamedAttributeNode("managers"),
                 @NamedAttributeNode("vehicles")
         }
 )

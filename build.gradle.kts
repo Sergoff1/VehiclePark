@@ -24,9 +24,11 @@ dependencies {
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
 
-    implementation("org.springframework.security:spring-security-web:6.5.1")
-    implementation("org.springframework.security:spring-security-config:6.5.1")
-    testImplementation("org.springframework.security:spring-security-test:6.5.1")
+    implementation("org.springframework.security:spring-security-web:6.5.2")
+    implementation("org.springframework.security:spring-security-config:6.5.2")
+    implementation("org.springframework.security:spring-security-oauth2-resource-server:6.5.2")
+    implementation("org.springframework.security:spring-security-oauth2-jose:6.5.2")
+    testImplementation("org.springframework.security:spring-security-test:6.5.2")
 
     implementation("org.thymeleaf:thymeleaf-spring6:3.1.3.RELEASE")
 
