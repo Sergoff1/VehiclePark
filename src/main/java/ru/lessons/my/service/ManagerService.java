@@ -1,5 +1,6 @@
 package ru.lessons.my.service;
 
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,16 +18,21 @@ public class ManagerService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Manager manager = managerRepository.getByUsername(username);
+        Manager manager = getManagerByUsername(username);
 
         return User.builder()
                 .username(manager.getUsername())
                 .password(manager.getPassword())
-                .roles("USER")
+                .roles("MANAGER")
                 .build();
     }
 
     public Manager getManagerByUsername(String username) {
-        return managerRepository.getByUsername(username);
+        try {
+            return managerRepository.getByUsername(username);
+        } catch (NoResultException e) {
+            throw new UsernameNotFoundException(String.format("Manager %s not found", username));
+        }
+
     }
 }

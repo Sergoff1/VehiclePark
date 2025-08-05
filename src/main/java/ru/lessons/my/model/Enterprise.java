@@ -42,7 +42,7 @@ public class Enterprise {
 
     private String city;
 
-    @ManyToMany(mappedBy = "enterprises")
+    @ManyToMany(mappedBy = "enterprises", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Set<Manager> managers = new HashSet<>();
 
     //todo Рассмотреть возможность использования коллекции чисел для простого хранения айдишников.

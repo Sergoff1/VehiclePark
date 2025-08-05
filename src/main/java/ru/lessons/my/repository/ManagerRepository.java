@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import ru.lessons.my.model.Manager;
 
+import java.util.Optional;
+
 @Repository
 public class ManagerRepository {
 

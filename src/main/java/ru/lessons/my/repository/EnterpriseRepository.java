@@ -6,10 +6,12 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import ru.lessons.my.model.Enterprise;
+import ru.lessons.my.model.Manager;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class EnterpriseRepository {
@@ -26,17 +28,25 @@ public class EnterpriseRepository {
         }
     }
 
-    public Enterprise findById(Long id) {
+    public Optional<Enterprise> findById(Long id) {
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
 
-        return entityManager.find(Enterprise.class, id, hints);
+        return Optional.ofNullable(entityManager.find(Enterprise.class, id, hints));
     }
 
     public List<Enterprise> findAll() {
         TypedQuery<Enterprise> query = entityManager.createQuery("SELECT e FROM Enterprise e", Enterprise.class);
         query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
 
+        return query.getResultList();
+    }
+
+    public List<Enterprise> findByManager(Manager manager) {
+        TypedQuery<Enterprise> query = entityManager.createQuery(
+                "SELECT e FROM Enterprise e WHERE :manager member of e.managers", Enterprise.class);
+        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
+        query.setParameter("manager", manager);
         return query.getResultList();
     }
 
