@@ -1,21 +1,30 @@
 package ru.lessons.my.controller.rest;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lessons.my.converter.VehicleToVehicleDtoConverter;
 import ru.lessons.my.dto.VehicleDto;
 import ru.lessons.my.model.Enterprise;
 import ru.lessons.my.model.Manager;
-import ru.lessons.my.service.ManagerService;
+import ru.lessons.my.model.Vehicle;
+import ru.lessons.my.security.SecurityUtils;
 import ru.lessons.my.service.VehicleService;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -25,11 +34,11 @@ public class VehicleRestController {
 
     private final VehicleService vehicleService;
     private final VehicleToVehicleDtoConverter toVehicleDtoConverter;
-    private final ManagerService managerService;
+    private final SecurityUtils securityUtils;
 
     @GetMapping
-    public List<VehicleDto> findAll(Authentication authentication) {
-        Manager manager = managerService.getManagerByUsername(authentication.getName());
+    public List<VehicleDto> findAll() {
+        Manager manager = securityUtils.getCurrentManager();
 
         if (manager == null) {
             return Collections.emptyList();
@@ -43,7 +52,84 @@ public class VehicleRestController {
     }
 
     @GetMapping("{id}")
-    public VehicleDto findById(@PathVariable("id") long id) {
-        return toVehicleDtoConverter.convert(vehicleService.findById(id));
+    public ResponseEntity<?> findById(@PathVariable("id") long id) {
+        Manager manager = securityUtils.getCurrentManager();
+
+        Vehicle vehicle = vehicleService.findById(id);
+
+        Optional<Enterprise> enterprise = manager.getEnterprises().stream()
+                .filter(e -> e.getId().equals(vehicle.getEnterprise().getId()))
+                .findFirst();
+
+        if (enterprise.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Нельзя просматривать автомобили стороннего предприятия");
+        }
+
+        return ResponseEntity.ok().body(toVehicleDtoConverter.convert(vehicleService.findById(id)));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody VehicleDto vehicleDto) {
+        Manager manager = securityUtils.getCurrentManager();
+
+        Optional<Enterprise> enterprise = manager.getEnterprises().stream()
+                .filter(e -> e.getId().equals(vehicleDto.getEnterpriseId()))
+                .findFirst();
+
+        if (enterprise.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Нельзя создать автомобиль для стороннего предприятия");
+        }
+
+        Long newVehicleID = vehicleService.saveAndGetId(vehicleDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newVehicleID)
+                .toUri();
+        return ResponseEntity.created(location).body("Vehicle with id " + newVehicleID + " created");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody VehicleDto vehicleDto) {
+        Manager manager = securityUtils.getCurrentManager();
+
+        Vehicle vehicle = vehicleService.findById(id);
+
+        Optional<Enterprise> enterprise = manager.getEnterprises().stream()
+                .filter(e -> e.getId().equals(vehicle.getEnterprise().getId()))
+                .findFirst();
+
+        if (enterprise.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Нельзя редактировать автомобиль стороннего предприятия");
+        }
+
+        //Костыль, чтобы юзер не заменил id машины.
+        // todo Перейти на более изящное решение.
+        vehicleDto.setId(id);
+        vehicleService.saveAndGetId(vehicleDto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") long id) {
+        Manager manager = securityUtils.getCurrentManager();
+
+        Vehicle vehicle = vehicleService.findById(id);
+
+        Optional<Enterprise> enterprise = manager.getEnterprises().stream()
+                .filter(e -> e.getId().equals(vehicle.getEnterprise().getId()))
+                .findFirst();
+
+        if (enterprise.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        vehicleService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

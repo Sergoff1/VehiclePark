@@ -23,7 +23,7 @@ public class ManagerService implements UserDetailsService {
         return User.builder()
                 .username(manager.getUsername())
                 .password(manager.getPassword())
-                .roles("MANAGER")
+                .authorities("API")
                 .build();
     }
 

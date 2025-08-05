@@ -15,6 +15,7 @@ import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(
@@ -70,7 +72,7 @@ public class Vehicle {
     @JoinColumn(name = "active_driver_id", unique = true)
     private Driver activeDriver;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name="driver_vehicle",
             joinColumns=  @JoinColumn(name="vehicle_id", referencedColumnName="id"),
             inverseJoinColumns= @JoinColumn(name="driver_id", referencedColumnName="id") )

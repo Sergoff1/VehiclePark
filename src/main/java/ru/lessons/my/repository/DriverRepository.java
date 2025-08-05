@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class DriverRepository {
@@ -29,11 +30,11 @@ public class DriverRepository {
         }
     }
 
-    public Driver findById(Long id) {
+    public Optional<Driver> findById(Long id) {
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
 
-        return entityManager.find(Driver.class, id, hints);
+        return Optional.ofNullable(entityManager.find(Driver.class, id, hints));
     }
 
     public List<Driver> findAll() {

@@ -24,8 +24,6 @@ public class AuthenticationRestController {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 authRequest.getUsername(), authRequest.getPassword());
 
-        authenticationManager.authenticate(authentication);
-
-        return jwtUtils.generateToken(authRequest.getUsername());
+        return jwtUtils.generateToken(authenticationManager.authenticate(authentication));
     }
 }

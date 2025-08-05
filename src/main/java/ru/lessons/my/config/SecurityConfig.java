@@ -23,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import ru.lessons.my.security.RsaKeyProperties;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.oauth2.core.authorization.OAuth2AuthorizationManagers.hasScope;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/login").permitAll()
+                        .requestMatchers("/api/**").access(hasScope("API"))
                         .anyRequest()
                         .authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))

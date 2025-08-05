@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.lessons.my.model.VehicleModel;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class VehicleModelRepository {
@@ -23,8 +24,8 @@ public class VehicleModelRepository {
         }
     }
 
-    public VehicleModel findById(Long id) {
-        return entityManager.find(VehicleModel.class, id);
+    public Optional<VehicleModel> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(VehicleModel.class, id));
     }
 
     public List<VehicleModel> findAll() {

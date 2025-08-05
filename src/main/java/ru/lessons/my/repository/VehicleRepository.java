@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class VehicleRepository {
@@ -29,11 +30,11 @@ public class VehicleRepository {
         }
     }
 
-    public Vehicle findById(Long id) {
+    public Optional<Vehicle> findById(Long id) {
         Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
 
-        return entityManager.find(Vehicle.class, id, hints);
+        return Optional.ofNullable(entityManager.find(Vehicle.class, id, hints));
     }
 
     public List<Vehicle> findAll() {

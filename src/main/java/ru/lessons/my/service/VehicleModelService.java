@@ -1,5 +1,6 @@
 package ru.lessons.my.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.lessons.my.model.VehicleModel;
@@ -18,7 +19,8 @@ public class VehicleModelService {
     }
 
     public VehicleModel findById(Long id) {
-        return vehicleModelRepository.findById(id);
+        return vehicleModelRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Vehicle Model with id %s not found", id)));
     }
 
     public void save(VehicleModel vehicleModel) {
