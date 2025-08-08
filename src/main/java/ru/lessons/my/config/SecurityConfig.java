@@ -10,17 +10,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import ru.lessons.my.security.RsaKeyProperties;
+import ru.lessons.my.service.ManagerService;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.oauth2.core.authorization.OAuth2AuthorizationManagers.hasScope;
@@ -33,7 +37,7 @@ public class SecurityConfig {
     private final RsaKeyProperties rsaKeys;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, DaoAuthenticationProvider daoAuthenticationProvider) throws Exception {
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/login").permitAll()
                         .requestMatchers("/api/**").access(hasScope("API"))
@@ -41,8 +45,30 @@ public class SecurityConfig {
                         .authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .formLogin(withDefaults())
+                .httpBasic(withDefaults()) //Вернул этот способ для тестов
                 .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder())));
+
+        http.authenticationProvider(daoAuthenticationProvider);
+        http.userDetailsService(inMemoryUserDetailsManager());
         return http.build();
+    }
+
+    @Bean
+    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
+        return new InMemoryUserDetailsManager(
+                User.builder()
+                        .username("user")
+                        .password(passwordEncoder().encode("user"))
+                        .roles("USER")
+                        .build()
+        );
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider(ManagerService managerService) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(managerService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
     @Bean
