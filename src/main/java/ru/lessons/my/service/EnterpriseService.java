@@ -62,4 +62,10 @@ public class EnterpriseService {
     public void deleteById(Long id) {
         enterpriseRepository.deleteById(id);
     }
+
+    @Transactional
+    public void delete(Long id) {
+        Enterprise enterprise = enterpriseRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        enterpriseRepository.delete(enterprise);
+    }
 }

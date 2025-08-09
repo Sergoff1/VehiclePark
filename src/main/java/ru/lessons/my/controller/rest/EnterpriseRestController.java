@@ -73,7 +73,7 @@ public class EnterpriseRestController {
                 .path("/{id}")
                 .buildAndExpand(newEnterprise.getId())
                 .toUri();
-        return ResponseEntity.created(location).body("Enterprise with id " + newEnterprise.getId() + " created");
+        return ResponseEntity.created(location).body(toEnterpriseDtoConverter.convert(newEnterprise));
     }
 
     @PutMapping("/{id}")
@@ -92,7 +92,7 @@ public class EnterpriseRestController {
         enterpriseDto.setId(id);
         enterpriseService.update(enterpriseDto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
@@ -107,7 +107,7 @@ public class EnterpriseRestController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        enterpriseService.deleteById(id);
+        enterpriseService.delete(id);
 
         return ResponseEntity.noContent().build();
     }

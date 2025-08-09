@@ -34,7 +34,7 @@ public class Manager {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name="manager_enterprise",
             joinColumns=  @JoinColumn(name="manager_id", referencedColumnName="id"),
             inverseJoinColumns= @JoinColumn(name="enterprise_id", referencedColumnName="id") )

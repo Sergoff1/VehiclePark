@@ -38,10 +38,10 @@ public class VehicleService {
     }
 
     @Transactional
-    public Long saveAndGetId(VehicleDto vehicleDto) {
+    public Vehicle saveAndGet(VehicleDto vehicleDto) {
         Vehicle vehicle = toVehicleConverter.convert(vehicleDto);
         vehicleRepository.save(vehicle);
-        return vehicle.getId();
+        return vehicle;
     }
 
     public void deleteById(Long id) {

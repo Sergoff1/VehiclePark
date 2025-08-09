@@ -82,13 +82,13 @@ public class VehicleRestController {
                     .body("Нельзя создать автомобиль для стороннего предприятия");
         }
 
-        Long newVehicleID = vehicleService.saveAndGetId(vehicleDto);
+        Vehicle newVehicle = vehicleService.saveAndGet(vehicleDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(newVehicleID)
+                .buildAndExpand(newVehicle.getId())
                 .toUri();
-        return ResponseEntity.created(location).body("Vehicle with id " + newVehicleID + " created");
+        return ResponseEntity.created(location).body(toVehicleDtoConverter.convert(newVehicle));
     }
 
     @PutMapping("/{id}")
@@ -109,9 +109,9 @@ public class VehicleRestController {
         //Костыль, чтобы юзер не заменил id машины.
         // todo Перейти на более изящное решение.
         vehicleDto.setId(id);
-        vehicleService.saveAndGetId(vehicleDto);
+        vehicleService.saveAndGet(vehicleDto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

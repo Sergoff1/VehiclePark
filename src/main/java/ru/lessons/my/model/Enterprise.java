@@ -9,11 +9,13 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreRemove;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +44,7 @@ public class Enterprise {
 
     private String city;
 
-    @ManyToMany(mappedBy = "enterprises", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToMany(mappedBy = "enterprises", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Manager> managers = new HashSet<>();
 
     //todo Рассмотреть возможность использования коллекции чисел для простого хранения айдишников.
@@ -52,5 +54,13 @@ public class Enterprise {
 
     @OneToMany(mappedBy = "enterprise", cascade = CascadeType.ALL)
     private Set<Driver> drivers = new HashSet<>();
+
+//    @PreRemove
+//    private void preventDeletionIfMoreThanOneManagerExist() {
+//        if (managers.size() > 1) {
+//            //todo Подумать над видом исключения
+//            throw new ConstraintViolationException("Cannot delete Enterprise with associated Managers", null, null);
+//        }
+//    }
 
 }
