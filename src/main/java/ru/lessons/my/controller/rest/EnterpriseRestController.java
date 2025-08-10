@@ -107,7 +107,11 @@ public class EnterpriseRestController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        enterpriseService.delete(id);
+        if (enterpriseService.findById(id).getManagers().size() > 1) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        enterpriseService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }

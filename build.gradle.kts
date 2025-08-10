@@ -48,6 +48,8 @@ dependencies {
     testImplementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
     testImplementation("com.h2database:h2:2.3.232")
     testImplementation("org.glassfish:jakarta.el:4.0.2")
+    testImplementation("org.hamcrest:hamcrest:3.0")
+    testImplementation("com.jayway.jsonpath:json-path:2.9.0")
 }
 
 tasks.test {

@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.lessons.my.config.BaseConfig;
 import ru.lessons.my.config.SecurityConfig;
-import ru.lessons.my.config.TestConfig;
+import ru.lessons.my.config.TestDbConfig;
 import ru.lessons.my.config.WebConfig;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {BaseConfig.class, SecurityConfig.class, WebConfig.class, TestConfig.class})
+@ContextConfiguration(classes = {BaseConfig.class, SecurityConfig.class, WebConfig.class, TestDbConfig.class})
 @WebAppConfiguration
 public class CsrfTest {
 

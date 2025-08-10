@@ -57,8 +57,4 @@ public class EnterpriseRepository {
                 .executeUpdate();
     }
 
-    @Transactional
-    public void delete(Enterprise enterprise) {
-        entityManager.remove(enterprise);
-    }
 }

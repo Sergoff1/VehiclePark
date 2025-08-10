@@ -49,18 +49,10 @@ public class Enterprise {
 
     //todo Рассмотреть возможность использования коллекции чисел для простого хранения айдишников.
     // Кажется, что целые сущности тут ни к чему.
-    @OneToMany(mappedBy = "enterprise", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "enterprise", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Set<Vehicle> vehicles = new HashSet<>();
 
-    @OneToMany(mappedBy = "enterprise", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "enterprise", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Set<Driver> drivers = new HashSet<>();
-
-//    @PreRemove
-//    private void preventDeletionIfMoreThanOneManagerExist() {
-//        if (managers.size() > 1) {
-//            //todo Подумать над видом исключения
-//            throw new ConstraintViolationException("Cannot delete Enterprise with associated Managers", null, null);
-//        }
-//    }
 
 }
