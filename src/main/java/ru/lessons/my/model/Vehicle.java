@@ -72,7 +72,8 @@ public class Vehicle {
     @JoinColumn(name = "active_driver_id", unique = true)
     private Driver activeDriver;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Builder.Default
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name="driver_vehicle",
             joinColumns=  @JoinColumn(name="vehicle_id", referencedColumnName="id"),
             inverseJoinColumns= @JoinColumn(name="driver_id", referencedColumnName="id") )

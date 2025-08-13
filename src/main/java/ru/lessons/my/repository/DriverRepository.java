@@ -55,6 +55,14 @@ public class DriverRepository {
         return query.getResultList();
     }
 
+    public List<Driver> findByEnterpriseId(Long enterpriseId) {
+        TypedQuery<Driver> query = entityManager.createQuery(
+                "SELECT d FROM Driver d WHERE d.enterprise.id = :enterpriseId", Driver.class);
+        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
+        query.setParameter("enterpriseId", enterpriseId);
+        return query.getResultList();
+    }
+
     @Transactional
     public void deleteById(Long id) {
         entityManager.createQuery("delete from Driver where id = :id")

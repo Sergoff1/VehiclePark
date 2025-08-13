@@ -21,6 +21,7 @@ repositories {
 dependencies {
     implementation("org.springframework:spring-webmvc:6.2.8")
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
+    implementation("org.thymeleaf:thymeleaf-spring6:3.1.3.RELEASE")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
 
@@ -28,9 +29,7 @@ dependencies {
     implementation("org.springframework.security:spring-security-config:6.5.2")
     implementation("org.springframework.security:spring-security-oauth2-resource-server:6.5.2")
     implementation("org.springframework.security:spring-security-oauth2-jose:6.5.2")
-    testImplementation("org.springframework.security:spring-security-test:6.5.2")
-
-    implementation("org.thymeleaf:thymeleaf-spring6:3.1.3.RELEASE")
+    implementation("org.springframework.shell:spring-shell-starter:3.4.1")
 
     implementation("ch.qos.logback:logback-classic:1.5.18")
 
@@ -45,6 +44,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.springframework:spring-test:6.2.8")
+    testImplementation("org.springframework.security:spring-security-test:6.5.2")
     testImplementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
     testImplementation("com.h2database:h2:2.3.232")
     testImplementation("org.glassfish:jakarta.el:4.0.2")

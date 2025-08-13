@@ -12,9 +12,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +25,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(
@@ -52,7 +53,8 @@ public class Driver {
     @OneToOne(mappedBy = "activeDriver")
     private Vehicle currentVehicle;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @Builder.Default
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name="driver_vehicle",
             joinColumns=  @JoinColumn(name="driver_id", referencedColumnName="id"),
             inverseJoinColumns= @JoinColumn(name="vehicle_id", referencedColumnName="id") )
