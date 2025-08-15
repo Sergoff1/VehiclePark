@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lessons.my.converter.VehicleToVehicleDtoConverter;
+import ru.lessons.my.dto.PageResult;
 import ru.lessons.my.dto.VehicleDto;
 import ru.lessons.my.model.Enterprise;
 import ru.lessons.my.model.Manager;
@@ -49,6 +51,21 @@ public class VehicleRestController {
         return vehicleService.findByEnterprises(enterprises).stream()
                 .map(toVehicleDtoConverter::convert)
                 .toList();
+    }
+
+    //todo для эскпериментов выделил версию с пагинацией в отдельный эндпоинт
+    @GetMapping("paged")
+    public PageResult<VehicleDto> findAllPaginated(@RequestParam(defaultValue = "1", name = "page") int page,
+                                                   @RequestParam(defaultValue = "20", name = "size") int size) {
+        Manager manager = securityUtils.getCurrentManager();
+
+        if (manager == null) {
+            return null;
+        }
+
+        Set<Enterprise> enterprises = manager.getEnterprises();
+
+        return vehicleService.findByEnterprises(enterprises, page, size);
     }
 
     @GetMapping("{id}")

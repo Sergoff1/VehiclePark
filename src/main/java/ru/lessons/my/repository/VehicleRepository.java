@@ -55,6 +55,26 @@ public class VehicleRepository {
         return query.getResultList();
     }
 
+    public List<Vehicle> findByEnterprises(Collection<Enterprise> enterprises, int page, int size) {
+        if (enterprises == null || enterprises.isEmpty()) {
+            return Collections.emptyList();
+        }
+        TypedQuery<Vehicle> query = entityManager.createQuery(
+                "SELECT v FROM Vehicle v WHERE v.enterprise IN :enterprises ORDER BY v.color, v.id", Vehicle.class);
+        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+        query.setParameter("enterprises", enterprises);
+        query.setFirstResult((page - 1) * size);
+        query.setMaxResults(size);
+        return query.getResultList();
+    }
+
+    public long countVehiclesByEnterprises(Collection<Enterprise> enterprises) {
+        String jpql = "SELECT COUNT(v) FROM Vehicle v WHERE v.enterprise IN :enterprises";
+        return entityManager.createQuery(jpql, Long.class)
+                .setParameter("enterprises", enterprises)
+                .getSingleResult();
+    }
+
     @Transactional
     public void deleteById(Long id) {
         entityManager.createQuery("delete from Vehicle where id = :id")
