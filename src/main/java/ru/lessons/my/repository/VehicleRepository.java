@@ -32,14 +32,14 @@ public class VehicleRepository {
 
     public Optional<Vehicle> findById(Long id) {
         Map<String, Object> hints = new HashMap<>();
-        hints.put("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+        hints.put("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
 
         return Optional.ofNullable(entityManager.find(Vehicle.class, id, hints));
     }
 
     public List<Vehicle> findAll() {
         TypedQuery<Vehicle> query = entityManager.createQuery("SELECT v FROM Vehicle v", Vehicle.class);
-        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
 
         return query.getResultList();
     }
@@ -50,7 +50,7 @@ public class VehicleRepository {
         }
         TypedQuery<Vehicle> query = entityManager.createQuery(
                 "SELECT v FROM Vehicle v WHERE v.enterprise IN :enterprises", Vehicle.class);
-        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
         query.setParameter("enterprises", enterprises);
         return query.getResultList();
     }
@@ -61,7 +61,7 @@ public class VehicleRepository {
         }
         TypedQuery<Vehicle> query = entityManager.createQuery(
                 "SELECT v FROM Vehicle v WHERE v.enterprise IN :enterprises ORDER BY v.color, v.id", Vehicle.class);
-        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
         query.setParameter("enterprises", enterprises);
         query.setFirstResult((page - 1) * size);
         query.setMaxResults(size);

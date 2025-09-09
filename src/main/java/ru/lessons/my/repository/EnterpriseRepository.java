@@ -30,14 +30,14 @@ public class EnterpriseRepository {
 
     public Optional<Enterprise> findById(Long id) {
         Map<String, Object> hints = new HashMap<>();
-        hints.put("javax.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
+        hints.put("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
 
         return Optional.ofNullable(entityManager.find(Enterprise.class, id, hints));
     }
 
     public List<Enterprise> findAll() {
         TypedQuery<Enterprise> query = entityManager.createQuery("SELECT e FROM Enterprise e", Enterprise.class);
-        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
 
         return query.getResultList();
     }
@@ -45,7 +45,7 @@ public class EnterpriseRepository {
     public List<Enterprise> findByManager(Manager manager) {
         TypedQuery<Enterprise> query = entityManager.createQuery(
                 "SELECT e FROM Enterprise e WHERE :manager member of e.managers", Enterprise.class);
-        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
         query.setParameter("manager", manager);
         return query.getResultList();
     }

@@ -32,14 +32,14 @@ public class DriverRepository {
 
     public Optional<Driver> findById(Long id) {
         Map<String, Object> hints = new HashMap<>();
-        hints.put("javax.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
+        hints.put("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
 
         return Optional.ofNullable(entityManager.find(Driver.class, id, hints));
     }
 
     public List<Driver> findAll() {
         TypedQuery<Driver> query = entityManager.createQuery("SELECT d FROM Driver d", Driver.class);
-        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
 
         return query.getResultList();
     }
@@ -50,7 +50,7 @@ public class DriverRepository {
         }
         TypedQuery<Driver> query = entityManager.createQuery(
                 "SELECT d FROM Driver d WHERE d.enterprise IN :enterprises", Driver.class);
-        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
         query.setParameter("enterprises", enterprises);
         return query.getResultList();
     }
@@ -58,7 +58,7 @@ public class DriverRepository {
     public List<Driver> findByEnterpriseId(Long enterpriseId) {
         TypedQuery<Driver> query = entityManager.createQuery(
                 "SELECT d FROM Driver d WHERE d.enterprise.id = :enterpriseId", Driver.class);
-        query.setHint("javax.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Driver.detail"));
         query.setParameter("enterpriseId", enterpriseId);
         return query.getResultList();
     }
