@@ -2,26 +2,55 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Add vehicle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Добавить новый автомобиль</h1>
+    <div class="container mt-4">
+        <h1>Добавить новый автомобиль</h1>
+        <form th:action="@{/vehicles/new}" th:object="${vehicle}" method="post">
+            <div class="mb-3"><label class="form-label">Марка и модель</label>
+                <select name="modelId">
+                    <option th:each="vehicleModel : ${models}"
+                            th:value="${vehicleModel.id}"
+                            th:text="${vehicleModel.getBrandName() + ' ' + vehicleModel.getModelName()}">
+                    </option>
+                </select>
+            </div>
+            <div class="mb-3"><label class="form-label">Предприятие</label>
+                <select name="enterpriseId">
+                    <option th:each="enterprise : ${enterprises}"
+                            th:value="${enterprise.id}"
+                            th:text="${enterprise.getName()}">
+                    </option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Гос. номер</label>
+                <input type="text" class="form-control" th:field="*{licensePlateNumber}" required/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Пробег (км)</label>
+                <input type="number" class="form-control" th:field="*{mileageKm}" required/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Год выпуска</label>
+                <input type="number" class="form-control" th:field="*{productionYear}" required/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Цвет</label>
+                <input type="text" class="form-control" th:field="*{color}" required/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Цена покупки (Руб)</label>
+                <input type="number" class="form-control" th:field="*{purchasePriceRub}" required/>
+            </div>
 
-    <form th:action="@{/vehicles/new}" th:object="${vehicle}" method="post">
-        <label>Марка и модель:
-            <select name="modelId">
-                <option th:each="vehicleModel : ${models}"
-                        th:value="${vehicleModel.id}" th:text="${vehicleModel.getBrandName() + ' ' +
-                         vehicleModel.getModelName()}"></option>
-            </select>
-        </label>
-        <br/>
-        <label>Гос. номер: <input type="text" th:field="*{licensePlateNumber}"/></label><br/>
-        <label>Пробег (км): <input type="number" th:field="*{mileageKm}"/></label><br/>
-        <label>Год выпуска: <input type="number" th:field="*{productionYear}"/></label><br/>
-        <label>Цвет: <input type="text" th:field="*{color}"/></label><br/>
-        <label>Цена покупки: <input type="number" th:field="*{purchasePriceRub}"/></label><br/>
-        <button type="submit">Добавить</button>
-    </form>
+            <button type="submit" class="btn btn-success">Добавить</button>
+            <button class="btn btn-secondary" onclick="history.back()">Отмена</button>
+        </form>
+    </div>
 </body>
 </html>

@@ -33,7 +33,8 @@ import java.util.Set;
         name = "Vehicle.detail",
         attributeNodes = {
                 @NamedAttributeNode("enterprise"),
-                @NamedAttributeNode("drivers")
+                @NamedAttributeNode("drivers"),
+                @NamedAttributeNode("model")
         }
 )
 public class Vehicle {

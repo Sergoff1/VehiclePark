@@ -36,16 +36,12 @@ public class VehicleService {
         return vehicleRepository.findByEnterprises(enterprises);
     }
 
-    //todo то тут, то там конвертируем объекты -- поправить.
-    // подумать над кастомизацией фильтрации
-    public PageResult<VehicleDto> findByEnterprises(Collection<Enterprise> enterprises, int page, int size) {
-         List<VehicleDto> vehicles = vehicleRepository.findByEnterprises(enterprises, page, size).stream()
-                 .map(toVehicleDtoConverter::convert)
-                 .toList();
-
+    //todo подумать над кастомизацией фильтрации
+    public PageResult<Vehicle> findByEnterprises(Collection<Enterprise> enterprises, int page, int size) {
+         List<Vehicle> vehicles = vehicleRepository.findByEnterprises(enterprises, page, size);
          long vehicleCount = vehicleRepository.countVehiclesByEnterprises(enterprises);
 
-         return PageResult.<VehicleDto>builder()
+         return PageResult.<Vehicle>builder()
                  .page(page)
                  .size(size)
                  .totalPages(Math.ceilDiv(vehicleCount, size))

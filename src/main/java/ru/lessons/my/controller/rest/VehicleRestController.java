@@ -64,8 +64,16 @@ public class VehicleRestController {
         }
 
         Set<Enterprise> enterprises = manager.getEnterprises();
+        //Сделал какой-то ужас, нужно привести это к нормальному виду.
+        PageResult<Vehicle> intermediateResult = vehicleService.findByEnterprises(enterprises, page, size);
 
-        return vehicleService.findByEnterprises(enterprises, page, size);
+        return PageResult.<VehicleDto>builder()
+                .page(intermediateResult.getPage())
+                .size(intermediateResult.getSize())
+                .totalPages(intermediateResult.getTotalPages())
+                .totalElements(intermediateResult.getTotalElements())
+                .content(intermediateResult.getContent().stream().map(toVehicleDtoConverter::convert).toList())
+                .build();
     }
 
     @GetMapping("{id}")

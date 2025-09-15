@@ -16,11 +16,17 @@
                 <th>ID</th>
                 <th>Город</th>
                 <th>Название</th>
+                <th>Дополнительно</th>
             </tr>
             <tr th:each="enterprise : ${enterprises}">
                 <td th:text="${enterprise.getId()}"/>
                 <td th:text="${enterprise.getCity()}"/>
                 <td th:text="${enterprise.getName()}"/>
+                <td>
+                    <div class="button-container">
+                        <a th:href="@{'/vehicles?enterpriseId=' + ${enterprise.getId()}}" class="btn btn-primary" role="button">Автомобили</a>
+                        <a th:href="@{'/drivers?enterpriseId=' + ${enterprise.getId()}}" class="btn btn-primary" role="button">Водители</a>
+                    </div>
             </tr>
         </table>
     </div>

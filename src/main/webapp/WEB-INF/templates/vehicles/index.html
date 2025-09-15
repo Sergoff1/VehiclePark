@@ -2,35 +2,63 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>vehicles</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vehicles</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
-<h1>Список автомобилей</h1>
+    <div class="container mt-5">
+        <h1>Список автомобилей предприятия</h1>
+        <div class="mb-4"><a href="/vehicles/new" class="btn btn-primary">Добавить новый автомобиль</a></div>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>ID</th>
+                <th>Марка и модель</th>
+                <th>Гос. номер</th>
+                <th>Пробег (км)</th>
+                <th>Год выпуска</th>
+                <th>Цвет</th>
+                <th>Цена покупки (Руб)</th>
+                <th>Действия</th>
+            </tr>
+            <tr th:each="vehicle : ${pagedVehicles.getContent()}">
+                <td th:text="${vehicle.getId()}"/>
+                <td th:text="${vehicle.getModel().getBrandName() + ' ' + vehicle.getModel().getModelName()}"/>
+                <td th:text="${vehicle.getLicensePlateNumber()}"/>
+                <td th:text="${vehicle.getMileageKm()}"/>
+                <td th:text="${vehicle.getProductionYear()}"/>
+                <td th:text="${vehicle.getColor()}"/>
+                <td th:text="${vehicle.getPurchasePriceRub()}"/>
+                <td>
+                    <div class="button-container">
+                        <a th:href="@{/vehicles/edit/{id}(id=${vehicle.getId()})}" class="btn btn-sm">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a th:href="@{/vehicles/delete/{id}(id=${vehicle.getId()})}" class="btn btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-<a th:href="@{/vehicles/new}">Добавить новый автомобиль</a>
-<br>
-<table border="1" cellpadding="5">
-    <tr>
-        <th>ID</th>
-        <th>Марка и модель</th>
-        <th>Гос. номер</th>
-        <th>Пробег (км)</th>
-        <th>Год выпуска</th>
-        <th>Цвет</th>
-        <th>Цена покупки</th>
-    </tr>
-    <tr th:each="vehicle : ${vehicles}">
-        <td th:text="${vehicle.getId()}"/>
-        <td th:text="${vehicle.getModel().getBrandName() + ' ' + vehicle.getModel().getModelName()}"/>
-        <td th:text="${vehicle.getLicensePlateNumber()}"/>
-        <td th:text="${vehicle.getMileageKm()}"/>
-        <td th:text="${vehicle.getProductionYear()}"/>
-        <td th:text="${vehicle.getColor()}"/>
-        <td th:text="${vehicle.getPurchasePriceRub()}"/>
-
-        <td><a th:href="@{/vehicles/edit/{id}(id=${vehicle.getId()})}">Edit</a></td>
-        <td><a th:href="@{/vehicles/delete/{id}(id=${vehicle.getId()})}">Delete</a></td>
-    </tr>
-</table>
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li th:classappend="${pagedVehicles.getPage() != 1} ? 'page-item' : 'page-item disabled'"><a
+                        th:href="@{'/vehicles?enterpriseId=' + ${enterpriseId} + '&page=1'}" class="page-link"><<</a></li>
+                <li class="page-item active" aria-current="page">
+                <li th:classappend="${pagedVehicles.getPage() != 1} ? 'page-item' : 'page-item disabled'"><a
+                        th:href="@{'/vehicles?enterpriseId=' + ${enterpriseId} + '&page=' + ${pagedVehicles.getPage() - 1}}" class="page-link"><</a></li>
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link" th:text="${pagedVehicles.getPage()}"></span>
+                </li>
+                <li th:classappend="${pagedVehicles.getPage() != pagedVehicles.getTotalPages()} ? 'page-item' : 'page-item disabled'"><a
+                        th:href="@{'/vehicles?enterpriseId=' + ${enterpriseId} + '&page=' + ${pagedVehicles.getPage() + 1}}" class="page-link">></a></li>
+                <li th:classappend="${pagedVehicles.getPage() != pagedVehicles.getTotalPages()} ? 'page-item' : 'page-item disabled'"><a
+                        th:href="@{'/vehicles?enterpriseId=' + ${enterpriseId} + '&page=' + ${pagedVehicles.getTotalPages()}}" class="page-link">>></a></li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
