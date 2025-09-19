@@ -1,6 +1,7 @@
 package ru.lessons.my.model;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,6 +42,9 @@ public class Enterprise {
     private String name;
 
     private String city;
+
+    @Column(name = "time_zone")
+    private String timeZone = "UTC";
 
     @Builder.Default
     @ManyToMany(mappedBy = "enterprises", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

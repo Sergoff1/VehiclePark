@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Enterprises</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
 
@@ -16,17 +17,26 @@
                 <th>ID</th>
                 <th>Город</th>
                 <th>Название</th>
+                <th>Временная зона</th>
                 <th>Дополнительно</th>
+                <th></th>
             </tr>
             <tr th:each="enterprise : ${enterprises}">
                 <td th:text="${enterprise.getId()}"/>
                 <td th:text="${enterprise.getCity()}"/>
                 <td th:text="${enterprise.getName()}"/>
+                <td th:text="${enterprise.getTimeZone()}"/>
                 <td>
                     <div class="button-container">
                         <a th:href="@{'/vehicles?enterpriseId=' + ${enterprise.getId()}}" class="btn btn-primary" role="button">Автомобили</a>
                         <a th:href="@{'/drivers?enterpriseId=' + ${enterprise.getId()}}" class="btn btn-primary" role="button">Водители</a>
                     </div>
+                </td>
+                <td>
+                    <a th:href="@{/enterprises/edit/{id}(id=${enterprise.getId()})}" class="btn">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                </td>
             </tr>
         </table>
     </div>

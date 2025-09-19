@@ -60,7 +60,7 @@ public class VehicleRepository {
             return Collections.emptyList();
         }
         TypedQuery<Vehicle> query = entityManager.createQuery(
-                "SELECT v FROM Vehicle v WHERE v.enterprise IN :enterprises ORDER BY v.color, v.id", Vehicle.class);
+                "SELECT v FROM Vehicle v WHERE v.enterprise IN :enterprises ORDER BY v.id", Vehicle.class);
         query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
         query.setParameter("enterprises", enterprises);
         query.setFirstResult((page - 1) * size);

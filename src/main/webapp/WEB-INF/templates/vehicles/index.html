@@ -20,6 +20,7 @@
                 <th>Год выпуска</th>
                 <th>Цвет</th>
                 <th>Цена покупки (Руб)</th>
+                <th>Время покупки</th>
                 <th>Действия</th>
             </tr>
             <tr th:each="vehicle : ${pagedVehicles.getContent()}">
@@ -30,6 +31,7 @@
                 <td th:text="${vehicle.getProductionYear()}"/>
                 <td th:text="${vehicle.getColor()}"/>
                 <td th:text="${vehicle.getPurchasePriceRub()}"/>
+                <td th:text="${#temporals.format(T(ru.lessons.my.util.DateTimeUtils).convertFromUtc(vehicle.purchaseDateTime, clientTimeZone), 'yyyy-MM-dd HH:mm:ss')}"/>
                 <td>
                     <div class="button-container">
                         <a th:href="@{/vehicles/edit/{id}(id=${vehicle.getId()})}" class="btn btn-sm">

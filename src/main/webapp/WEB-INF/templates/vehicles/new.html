@@ -47,6 +47,10 @@
                 <label class="form-label">Цена покупки (Руб)</label>
                 <input type="number" class="form-control" th:field="*{purchasePriceRub}" required/>
             </div>
+            <div class="mb-3">
+                <label class="form-label">Время покупки</label>
+                <input type="datetime-local" class="form-control" th:field="*{purchaseDateTime}" required/>
+            </div>
 
             <button type="submit" class="btn btn-success">Добавить</button>
             <button class="btn btn-secondary" onclick="history.back()">Отмена</button>

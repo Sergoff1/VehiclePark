@@ -2,13 +2,17 @@ package ru.lessons.my.service;
 
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.lessons.my.model.Manager;
 import ru.lessons.my.repository.ManagerRepository;
+import ru.lessons.my.security.ManagerDetails;
+import ru.lessons.my.util.TimeZoneContext;
+
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -20,11 +24,8 @@ public class ManagerService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Manager manager = getManagerByUsername(username);
 
-        return User.builder()
-                .username(manager.getUsername())
-                .password(manager.getPassword())
-                .authorities("API")
-                .build();
+        return new ManagerDetails(manager.getUsername(), manager.getPassword(),
+                AuthorityUtils.createAuthorityList("API"), ZoneId.of(TimeZoneContext.get()));
     }
 
     public Manager getManagerByUsername(String username) {

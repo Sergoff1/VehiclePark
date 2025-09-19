@@ -1,8 +1,8 @@
 package ru.lessons.my.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,13 +17,16 @@ import ru.lessons.my.model.Enterprise;
 import ru.lessons.my.model.Manager;
 import ru.lessons.my.model.Vehicle;
 import ru.lessons.my.model.VehicleModel;
+import ru.lessons.my.security.ManagerDetails;
 import ru.lessons.my.security.SecurityUtils;
 import ru.lessons.my.service.EnterpriseService;
 import ru.lessons.my.service.VehicleModelService;
 import ru.lessons.my.service.VehicleService;
+import ru.lessons.my.util.DateTimeUtils;
 
+import java.time.ZoneId;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/vehicles")
@@ -48,14 +51,20 @@ public class VehicleController {
     public String findVehiclesByEnterprisePaged(@RequestParam(defaultValue = "1", name = "page") int page,
                                                 @RequestParam(defaultValue = "10", name = "size") int size,
                                                 @RequestParam(name = "enterpriseId") long enterpriseId,
+                                                @AuthenticationPrincipal ManagerDetails managerDetails,
                                                 Model model) {
 
         //todo Проверка на то, что у менеджера есть права на это предприятие.
         Enterprise enterprise = enterpriseService.findById(enterpriseId);
         PageResult<Vehicle> pagedVehicles = vehicleService.findByEnterprises(List.of(enterprise), page, size);
 
+        ZoneId timeZone = managerDetails.getTimeZone().getId().toLowerCase().contains("utc")
+                ? ZoneId.of(enterprise.getTimeZone())
+                : managerDetails.getTimeZone();
+
         model.addAttribute("pagedVehicles", pagedVehicles);
         model.addAttribute("enterpriseId", enterpriseId);
+        model.addAttribute("clientTimeZone", timeZone);
         return "vehicles/index";
     }
 
@@ -73,7 +82,8 @@ public class VehicleController {
     public String createVehicleModel(@Valid @ModelAttribute Vehicle vehicle,
                                      BindingResult bindingResult,
                                      @RequestParam("modelId") Long modelId,
-                                     @RequestParam("enterpriseId") Long enterpriseId) {
+                                     @RequestParam("enterpriseId") Long enterpriseId,
+                                     @AuthenticationPrincipal ManagerDetails managerDetails) {
         if (bindingResult.hasErrors()) {
             System.out.println(bindingResult.getAllErrors());
             return "vehicles/new";
@@ -82,16 +92,20 @@ public class VehicleController {
         Enterprise enterprise = enterpriseService.findById(enterpriseId);
         vehicle.setModel(model);
         vehicle.setEnterprise(enterprise);
+        vehicle.setPurchaseDateTime(DateTimeUtils.convertToUtc(vehicle.getPurchaseDateTime(), managerDetails.getTimeZone()));
 
         vehicleService.save(vehicle);
         return "redirect:/vehicles?enterpriseId=" + enterpriseId;
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model,
+                               @AuthenticationPrincipal ManagerDetails managerDetails) {
         Manager manager = securityUtils.getCurrentManager();
 
-        model.addAttribute("vehicle", vehicleService.findById(id));
+        Vehicle vehicle = vehicleService.findById(id);
+        vehicle.setPurchaseDateTime(DateTimeUtils.convertFromUtc(vehicle.getPurchaseDateTime(), managerDetails.getTimeZone()));
+        model.addAttribute("vehicle", vehicle);
         model.addAttribute("models", modelService.findAll());
         model.addAttribute("enterprises", enterpriseService.findByManager(manager));
         return "vehicles/edit";
@@ -102,7 +116,8 @@ public class VehicleController {
                                 @Valid @ModelAttribute Vehicle vehicle,
                                 BindingResult bindingResult,
                                 @RequestParam("modelId") Long modelId,
-                                @RequestParam("enterpriseId") Long enterpriseId) {
+                                @RequestParam("enterpriseId") Long enterpriseId,
+                                @AuthenticationPrincipal ManagerDetails managerDetails) {
         if (bindingResult.hasErrors()) {
             return "vehicles/edit";
         }
@@ -112,6 +127,8 @@ public class VehicleController {
         vehicle.setModel(model);
         vehicle.setEnterprise(enterprise);
         vehicle.setId(id);
+
+        vehicle.setPurchaseDateTime(DateTimeUtils.convertToUtc(vehicle.getPurchaseDateTime(), managerDetails.getTimeZone()));
         vehicleService.save(vehicle);
         return "redirect:/vehicles?enterpriseId=" + enterpriseId;
     }

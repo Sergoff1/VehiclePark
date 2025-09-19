@@ -20,6 +20,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,6 +66,9 @@ public class Vehicle {
     @Column(name = "purchase_price", nullable = false)
     @Min(value = 0, message = "Цена не может быть отрицательной")
     private int purchasePriceRub;
+
+    @Column(name = "purchase_date_time", nullable = false)
+    private LocalDateTime purchaseDateTime;
 
     @ManyToOne
     @JoinColumn(name = "enterprise_id", nullable = false)

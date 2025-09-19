@@ -20,6 +20,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ru.lessons.my.filter.TimeZoneFilter;
 import ru.lessons.my.security.RsaKeyProperties;
 
 import static org.springframework.security.oauth2.core.authorization.OAuth2AuthorizationManagers.hasScope;
@@ -44,7 +46,10 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/enterprises", true)
                         .permitAll()
                 )
-                .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder())));
+                .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder())))
+                .addFilterBefore(
+                        new TimeZoneFilter(),
+                        UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

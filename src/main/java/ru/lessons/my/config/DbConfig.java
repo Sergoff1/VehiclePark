@@ -45,6 +45,7 @@ public class DbConfig {
         Properties jpaProps = new Properties();
         jpaProps.put("hibernate.hbm2ddl.auto", hibernateHbm2ddl);
         jpaProps.put("hibernate.show_sql", hibernateShowSql);
+        jpaProps.put("hibernate.jdbc.time_zone", "UTC");
         emf.setJpaProperties(jpaProps);
 
         emf.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
