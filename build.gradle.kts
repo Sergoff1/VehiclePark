@@ -24,6 +24,8 @@ dependencies {
     implementation("org.thymeleaf:thymeleaf-spring6:3.1.3.RELEASE")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.0")
+    implementation("de.grundid.opendatalab:geojson-jackson:1.14")
 
     implementation("org.springframework.security:spring-security-web:6.5.2")
     implementation("org.springframework.security:spring-security-config:6.5.2")
@@ -37,6 +39,7 @@ dependencies {
     implementation("org.springframework:spring-orm:6.2.8")
     implementation("org.hibernate.orm:hibernate-core:7.0.3.Final")
     implementation("org.hibernate.validator:hibernate-validator:9.0.1.Final")
+    implementation("org.hibernate:hibernate-spatial:7.0.3.Final")
 
     compileOnly("org.projectlombok:lombok:1.18.38")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
