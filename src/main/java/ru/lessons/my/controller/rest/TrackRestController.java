@@ -1,0 +1,50 @@
+package ru.lessons.my.controller.rest;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.lessons.my.converter.GeoPointToFeatureConverter;
+import ru.lessons.my.converter.GeoPointToGeoPointDtoConverter;
+import ru.lessons.my.model.GeoPoint;
+import ru.lessons.my.model.Vehicle;
+import ru.lessons.my.service.GeoService;
+import ru.lessons.my.service.VehicleService;
+import ru.lessons.my.util.DateTimeUtils;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+
+@RestController
+@RequestMapping(value = "/api/v1/track")
+@RequiredArgsConstructor
+public class TrackRestController {
+
+    private final GeoService geoService;
+    private final VehicleService vehicleService;
+    private final GeoPointToFeatureConverter toFeatureConverter;
+    private final GeoPointToGeoPointDtoConverter toGeoPointDtoConverter;
+
+    @GetMapping
+    public List<?> getJsonTrack(@RequestParam("vehicleId") long vehicleId,
+                                @RequestParam("dateFrom") LocalDateTime dateFrom,
+                                @RequestParam("dateTo") LocalDateTime dateTo,
+                                @RequestParam(name = "format", defaultValue = "json") String format) {
+
+        Vehicle vehicle = vehicleService.findById(vehicleId);
+
+        ZoneId enterpriseTimeZone = ZoneId.of(vehicle.getEnterprise().getTimeZone());
+
+        LocalDateTime utcFrom = DateTimeUtils.convertToUtc(dateFrom, enterpriseTimeZone);
+        LocalDateTime utcTo = DateTimeUtils.convertToUtc(dateTo, enterpriseTimeZone);
+
+        List<GeoPoint> track = geoService.getGeoPointsByCoordinates(vehicleId, utcFrom, utcTo);
+
+        return "geojson".equalsIgnoreCase(format)
+                ? track.stream().map(toFeatureConverter::convert).toList()
+                : track.stream().map(toGeoPointDtoConverter::convert).toList();
+    }
+
+}

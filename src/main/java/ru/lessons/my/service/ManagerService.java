@@ -13,6 +13,7 @@ import ru.lessons.my.security.ManagerDetails;
 import ru.lessons.my.util.TimeZoneContext;
 
 import java.time.ZoneId;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class ManagerService implements UserDetailsService {
         Manager manager = getManagerByUsername(username);
 
         return new ManagerDetails(manager.getUsername(), manager.getPassword(),
-                AuthorityUtils.createAuthorityList("API"), ZoneId.of(TimeZoneContext.get()));
+                AuthorityUtils.createAuthorityList("API"), ZoneId.of(Objects.requireNonNullElse(TimeZoneContext.get(), "UTC")));
     }
 
     public Manager getManagerByUsername(String username) {
