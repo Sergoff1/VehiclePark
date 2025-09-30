@@ -27,6 +27,8 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.0")
     implementation("de.grundid.opendatalab:geojson-jackson:1.14")
 
+    implementation("com.graphhopper:directions-api-client-hc:10.2")
+
     implementation("org.springframework.security:spring-security-web:6.5.2")
     implementation("org.springframework.security:spring-security-config:6.5.2")
     implementation("org.springframework.security:spring-security-oauth2-resource-server:6.5.2")

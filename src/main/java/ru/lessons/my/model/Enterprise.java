@@ -44,6 +44,7 @@ public class Enterprise {
     private String city;
 
     @Column(name = "time_zone")
+    @Builder.Default
     private String timeZone = "UTC";
 
     @Builder.Default
