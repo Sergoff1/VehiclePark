@@ -18,20 +18,20 @@ import java.time.ZoneId;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/track")
+@RequestMapping(value = "/api/v1")
 @RequiredArgsConstructor
-public class TrackRestController {
+public class GeoRestController {
 
     private final GeoService geoService;
     private final VehicleService vehicleService;
     private final GeoPointToFeatureConverter toFeatureConverter;
     private final GeoPointToGeoPointDtoConverter toGeoPointDtoConverter;
 
-    @GetMapping
-    public List<?> getJsonTrack(@RequestParam("vehicleId") long vehicleId,
-                                @RequestParam("dateFrom") LocalDateTime dateFrom,
-                                @RequestParam("dateTo") LocalDateTime dateTo,
-                                @RequestParam(name = "format", defaultValue = "json") String format) {
+    @GetMapping("/track")
+    public List<?> getTrack(@RequestParam("vehicleId") long vehicleId,
+                            @RequestParam("dateFrom") LocalDateTime dateFrom,
+                            @RequestParam("dateTo") LocalDateTime dateTo,
+                            @RequestParam(name = "format", defaultValue = "json") String format) {
 
         Vehicle vehicle = vehicleService.findById(vehicleId);
 
@@ -40,7 +40,27 @@ public class TrackRestController {
         LocalDateTime utcFrom = DateTimeUtils.convertToUtc(dateFrom, enterpriseTimeZone);
         LocalDateTime utcTo = DateTimeUtils.convertToUtc(dateTo, enterpriseTimeZone);
 
-        List<GeoPoint> track = geoService.getGeoPointsByCoordinates(vehicleId, utcFrom, utcTo);
+        List<GeoPoint> track = geoService.getGeoPointsByTimeRange(vehicleId, utcFrom, utcTo);
+
+        return "geojson".equalsIgnoreCase(format)
+                ? track.stream().map(toFeatureConverter::convert).toList()
+                : track.stream().map(toGeoPointDtoConverter::convert).toList();
+    }
+
+    @GetMapping("/trips")
+    public List<?> getTrips(@RequestParam("vehicleId") long vehicleId,
+                            @RequestParam("dateFrom") LocalDateTime dateFrom,
+                            @RequestParam("dateTo") LocalDateTime dateTo,
+                            @RequestParam(name = "format", defaultValue = "json") String format) {
+
+        Vehicle vehicle = vehicleService.findById(vehicleId);
+
+        ZoneId enterpriseTimeZone = ZoneId.of(vehicle.getEnterprise().getTimeZone());
+
+        LocalDateTime utcFrom = DateTimeUtils.convertToUtc(dateFrom, enterpriseTimeZone);
+        LocalDateTime utcTo = DateTimeUtils.convertToUtc(dateTo, enterpriseTimeZone);
+
+        List<GeoPoint> track = geoService.getGeoPointsFromTrips(vehicleId, utcFrom, utcTo);
 
         return "geojson".equalsIgnoreCase(format)
                 ? track.stream().map(toFeatureConverter::convert).toList()

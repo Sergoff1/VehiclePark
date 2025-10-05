@@ -29,7 +29,8 @@ public class TrackGenerator {
     private final GeoPointRepository geoPointRepository;
     private final VehicleRepository vehicleRepository;
 
-    //generate-track -v 3 --area 55.732992 37.573300 55.776088 37.658373
+    //generate-track -v 1 --area 55.732992 37.573300 55.776088 37.658373
+    //todo Добавить параметр для ограничения количества точек
     @Command(description = "Create random track for vehicle")
     public String generateTrack(@Option(longNames = "vehicleId", shortNames = 'v', required = true) long vehicleId,
                                 @Option(arityMin = 4, arityMax = 4, longNames = "area", description = "coordinates of the area within which the route will be built") double[] area) {
