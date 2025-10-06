@@ -14,8 +14,10 @@ public class GeoPointToGeoPointDtoConverter implements Converter<GeoPoint, GeoPo
     @Override
     public GeoPointDto convert(GeoPoint source) {
         ZoneId enterpriseTimeZone = ZoneId.of(source.getVehicle().getEnterprise().getTimeZone());
+        long tripId = source.getTrip() == null ? -1 : source.getTrip().getId();
         return GeoPointDto.builder()
                 .vehicleId(source.getVehicle().getId())
+                .tripId(tripId)
                 .longitude(source.getPosition().getX())
                 .latitude(source.getPosition().getY())
                 .visitedAt(DateTimeUtils.convertFromUtc(source.getVisitedAt(), enterpriseTimeZone))

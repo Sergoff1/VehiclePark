@@ -25,6 +25,7 @@ public class DbConfig {
     @Value("${db.password}") private String dbPassword;
     @Value("${hibernate.hbm2ddl.auto}") private String hibernateHbm2ddl;
     @Value("${hibernate.show_sql}") private String hibernateShowSql;
+    @Value("${hibernate.format_sql}") private String hibernateFormatSql;
     @Value("${hibernate.jdbc.time_zone}") private String hibernateTimeZone;
 
     @Bean
@@ -46,6 +47,7 @@ public class DbConfig {
         Properties jpaProps = new Properties();
         jpaProps.put("hibernate.hbm2ddl.auto", hibernateHbm2ddl);
         jpaProps.put("hibernate.show_sql", hibernateShowSql);
+        jpaProps.put("hibernate.format_sql", hibernateFormatSql);
         jpaProps.put("hibernate.jdbc.time_zone", hibernateTimeZone);
         emf.setJpaProperties(jpaProps);
 

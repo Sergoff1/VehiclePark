@@ -16,6 +16,8 @@ public class GeoPointDto {
 
     private long vehicleId;
 
+    private long tripId;
+
     private double longitude;
 
     private double latitude;

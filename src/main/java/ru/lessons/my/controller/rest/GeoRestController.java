@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.lessons.my.converter.GeoPointToFeatureConverter;
 import ru.lessons.my.converter.GeoPointToGeoPointDtoConverter;
 import ru.lessons.my.model.GeoPoint;
+import ru.lessons.my.model.Trip;
 import ru.lessons.my.model.Vehicle;
 import ru.lessons.my.service.GeoService;
 import ru.lessons.my.service.VehicleService;
@@ -60,11 +61,12 @@ public class GeoRestController {
         LocalDateTime utcFrom = DateTimeUtils.convertToUtc(dateFrom, enterpriseTimeZone);
         LocalDateTime utcTo = DateTimeUtils.convertToUtc(dateTo, enterpriseTimeZone);
 
-        List<GeoPoint> track = geoService.getGeoPointsFromTrips(vehicleId, utcFrom, utcTo);
+        List<Trip> trips = geoService.getTripsByVehicleIdAndTimeRange(vehicleId, utcFrom, utcTo);
+        List<GeoPoint> tracks = geoService.getGeoPointsByTrips(trips);
 
         return "geojson".equalsIgnoreCase(format)
-                ? track.stream().map(toFeatureConverter::convert).toList()
-                : track.stream().map(toGeoPointDtoConverter::convert).toList();
+                ? tracks.stream().map(toFeatureConverter::convert).toList()
+                : tracks.stream().map(toGeoPointDtoConverter::convert).toList();
     }
 
 }

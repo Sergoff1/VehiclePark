@@ -39,4 +39,8 @@ public class GeoPoint {
     @ManyToOne
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
+
+    @ManyToOne
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
 }
