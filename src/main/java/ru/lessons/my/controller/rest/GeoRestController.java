@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lessons.my.converter.GeoPointToFeatureConverter;
 import ru.lessons.my.converter.GeoPointToGeoPointDtoConverter;
+import ru.lessons.my.converter.TripToTripDtoConverter;
+import ru.lessons.my.dto.TripDto;
 import ru.lessons.my.model.GeoPoint;
 import ru.lessons.my.model.Trip;
 import ru.lessons.my.model.Vehicle;
@@ -27,29 +29,10 @@ public class GeoRestController {
     private final VehicleService vehicleService;
     private final GeoPointToFeatureConverter toFeatureConverter;
     private final GeoPointToGeoPointDtoConverter toGeoPointDtoConverter;
+    private final TripToTripDtoConverter toTripDtoConverter;
 
-    @GetMapping("/track")
+    @GetMapping("/tracks")
     public List<?> getTrack(@RequestParam("vehicleId") long vehicleId,
-                            @RequestParam("dateFrom") LocalDateTime dateFrom,
-                            @RequestParam("dateTo") LocalDateTime dateTo,
-                            @RequestParam(name = "format", defaultValue = "json") String format) {
-
-        Vehicle vehicle = vehicleService.findById(vehicleId);
-
-        ZoneId enterpriseTimeZone = ZoneId.of(vehicle.getEnterprise().getTimeZone());
-
-        LocalDateTime utcFrom = DateTimeUtils.convertToUtc(dateFrom, enterpriseTimeZone);
-        LocalDateTime utcTo = DateTimeUtils.convertToUtc(dateTo, enterpriseTimeZone);
-
-        List<GeoPoint> track = geoService.getGeoPointsByTimeRange(vehicleId, utcFrom, utcTo);
-
-        return "geojson".equalsIgnoreCase(format)
-                ? track.stream().map(toFeatureConverter::convert).toList()
-                : track.stream().map(toGeoPointDtoConverter::convert).toList();
-    }
-
-    @GetMapping("/trips")
-    public List<?> getTrips(@RequestParam("vehicleId") long vehicleId,
                             @RequestParam("dateFrom") LocalDateTime dateFrom,
                             @RequestParam("dateTo") LocalDateTime dateTo,
                             @RequestParam(name = "format", defaultValue = "json") String format) {
@@ -67,6 +50,23 @@ public class GeoRestController {
         return "geojson".equalsIgnoreCase(format)
                 ? tracks.stream().map(toFeatureConverter::convert).toList()
                 : tracks.stream().map(toGeoPointDtoConverter::convert).toList();
+    }
+
+    @GetMapping("/trips")
+    public List<TripDto> getTrips(@RequestParam("vehicleId") long vehicleId,
+                            @RequestParam("dateFrom") LocalDateTime dateFrom,
+                            @RequestParam("dateTo") LocalDateTime dateTo) {
+
+        Vehicle vehicle = vehicleService.findById(vehicleId);
+
+        ZoneId enterpriseTimeZone = ZoneId.of(vehicle.getEnterprise().getTimeZone());
+
+        LocalDateTime utcFrom = DateTimeUtils.convertToUtc(dateFrom, enterpriseTimeZone);
+        LocalDateTime utcTo = DateTimeUtils.convertToUtc(dateTo, enterpriseTimeZone);
+
+        List<Trip> trips = geoService.getTripsByVehicleIdAndTimeRange(vehicleId, utcFrom, utcTo);
+
+        return trips.stream().map(toTripDtoConverter::convert).toList();
     }
 
 }

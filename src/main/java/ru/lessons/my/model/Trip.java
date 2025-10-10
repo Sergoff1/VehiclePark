@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +36,14 @@ public class Trip {
     private LocalDateTime endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id")
+    @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
+
+    @OneToOne
+    @JoinColumn(name = "start_geo_point_id", nullable = false)
+    private GeoPoint startPoint;
+
+    @OneToOne
+    @JoinColumn(name = "end_geo_point_id", nullable = false)
+    private GeoPoint endPoint;
 }
