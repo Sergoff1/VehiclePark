@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Vehicle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" integrity="sha512-Zcn6bjR/8RZbLEpLIeOwNtzREBAJnUKESxces60Mpoj+2okopSAcSUIUOseddDm0cxnGQzxIR7vJgsLZbdLE3w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        #map { width: 100%; height: 90vh; }
+        .legend {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            line-height: 1.4;
+            max-height: 60vh;
+            overflow: auto;
+        }
+        .legend .item { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+        .legend .swatch { width:18px; height:12px; border-radius:2px; display:inline-block; border:1px solid #999; }
+        .leaflet-attribution-flag {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 th:align="center">Информация об автомобиле</h1>
+    <table class="table table-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Марка и модель</th>
+            <th>Гос. номер</th>
+            <th>Пробег (км)</th>
+            <th>Год выпуска</th>
+            <th>Цвет</th>
+            <th>Цена покупки (Руб)</th>
+            <th>Время покупки</th>
+        </tr>
+        <tr>
+            <td th:text="${vehicle.getId()}"></td>
+            <td th:text="${vehicle.getModel().getBrandName() + ' ' + vehicle.getModel().getModelName()}"></td>
+            <td th:text="${vehicle.getLicensePlateNumber()}"></td>
+            <td th:text="${vehicle.getMileageKm()}"/>
+            <td th:text="${vehicle.getProductionYear()}"/>
+            <td th:text="${vehicle.getColor()}"/>
+            <td th:text="${vehicle.getPurchasePriceRub()}"/>
+            <td th:text="${#temporals.format(T(ru.lessons.my.util.DateTimeUtils).convertFromUtc(vehicle.purchaseDateTime, clientTimeZone), 'yyyy-MM-dd HH:mm:ss')}"/>
+        </tr>
+    </table>
+    <h1 th:align="center">Поездки</h1>
+
+    <form th:action="@{'/vehicles/' + ${vehicle.id}}" method="get">
+        <div class="container">
+            <div class="form-group">
+                <label for="dateFrom">С</label>
+                <input type="datetime-local" class="form-control" id="dateFrom" name="dateFrom"
+                       th:value="${dateFrom}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateTo">По</label>
+                <input type="datetime-local" class="form-control" id="dateTo" name="dateTo"
+                       th:value="${dateTo}" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2 mb-2" id="submitButton">Показать</button>
+        </div>
+    </form>
+
+    <div th:if="${trips.size() == 0}">
+        <p>В выбранный период поездок нет.</p>
+    </div>
+
+    <div th:if="${trips.size() > 0}">
+        <table class="table table-bordered">
+            <tr>
+                <th>ID</th>
+                <th>Время отправления</th>
+                <th>Время прибытия</th>
+                <th>Адрес отправления</th>
+                <th>Адрес прибытия</th>
+            </tr>
+            <tr th:each="trip : ${trips}">
+                <td th:text="${trip.getId()}"></td>
+                <td th:text="${#temporals.format(T(ru.lessons.my.util.DateTimeUtils).convertFromUtc(trip.startDate, clientTimeZone), 'yyyy-MM-dd HH:mm:ss')}"/>
+                <td th:text="${#temporals.format(T(ru.lessons.my.util.DateTimeUtils).convertFromUtc(trip.endDate, clientTimeZone), 'yyyy-MM-dd HH:mm:ss')}"/>
+                <td th:text="${T(ru.lessons.my.util.GeoUtils).getAddressByPoint(trip.getStartPoint().getPosition())}"/>
+                <td th:text="${T(ru.lessons.my.util.GeoUtils).getAddressByPoint(trip.getEndPoint().getPosition())}"/>
+            </tr>
+        </table>
+
+        <div id="map"></div>
+        <script th:inline="javascript">
+            let tracks = /*[[${tracks}]]*/ {};
+        </script>
+        <script>
+            let map = L.map('map').setView([55.75, 37.62], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Палитра цветов (будет циклически использоваться).
+            // Возможно стоит перейти на генерацию рандомного цвета, но пока и такого достаточно
+            let palette = ['#e6194b','#3cb44b','#443903','#4363d8','#f58231','#911eb4','#46f0f0','#f032e6','#bcf60c','#fabebe',
+                '#008080','#800000','#53d6ae','#808000','#ffd8b1'];
+            let colorIndex = 0;
+            let tripColors = {}; // tripId -> color
+
+            function getColorForTrip(tripId) {
+                if (tripColors[tripId]) return tripColors[tripId];
+                let c = palette[colorIndex % palette.length];
+                tripColors[tripId] = c;
+                colorIndex++;
+                return c;
+            }
+
+            // Конвертируем координату [lon, lat] -> [lat, lon]
+            function toLatLng(coord) {
+                return [coord[1], coord[0]];
+            }
+
+            // Группировка features по trip_id
+            // tripMap: tripId -> array of features
+            let tripMap = {};
+            tracks.forEach(function(f) {
+                let tid = String(f.properties.trip_id);
+                if (!tripMap[tid]) tripMap[tid] = [];
+                tripMap[tid].push(f);
+            });
+
+            // Для каждой поездки создаём featureGroup: линии + маркеры начала и конца поездки
+            let tripLayers = {}; // tripId -> { featureGroup, polyline, startMarker, endMarker, name }
+            let overlayMaps = {}; // name -> featureGroup (для L.control.layers)
+            let legendEntries = []; // массив для легенды
+
+            Object.keys(tripMap).forEach(function(tripId) {
+                let pts = tripMap[tripId];
+                let color = getColorForTrip(tripId);
+                let featureGroup = L.featureGroup();
+                let latlngs = [];
+
+                pts.forEach(function(f) {
+                    latlngs.push(toLatLng(f.geometry.coordinates));
+                });
+
+                //У нас всегда должно быть 2 минимум точки, поэтому сразу делаем линию маршрута
+                let polyline = L.polyline(latlngs, { color: color, weight: 4, opacity: 0.9 }).addTo(featureGroup);
+
+                // Маркеры начала/конца
+                let startMarker = L.circleMarker(latlngs[0], { radius: 6, fillColor: color, color: '#ffffff', weight: 2, fillOpacity: 1 }).addTo(featureGroup);
+                startMarker.bindPopup('Начало поездки ' + tripId);
+                let endMarker = L.circleMarker(latlngs[latlngs.length - 1], { radius: 6, fillColor: color, color: '#ffffff', weight: 2, fillOpacity: 1 }).addTo(featureGroup);
+                endMarker.bindPopup('Конец поездки ' + tripId);
+
+                let displayName = 'Поездка ' + tripId;
+                tripLayers[tripId] = {
+                    tripId: tripId,
+                    name: displayName,
+                    color: color,
+                    featureGroup: featureGroup,
+                    polyline: polyline,
+                    startMarker: startMarker,
+                    endMarker: endMarker
+                };
+
+                overlayMaps[displayName] = featureGroup;
+                legendEntries.push({ name: displayName, color: color });
+
+                featureGroup.addTo(map);
+            });
+
+            // Добавим контрол для переключения видимости поездок
+            L.control.layers(null, overlayMaps, { collapsed: false, position: 'topright' }).addTo(map);
+
+            // Легенда
+            let legend = L.control({ position: 'bottomright' });
+            legend.onAdd = function() {
+                let div = L.DomUtil.create('div', 'legend');
+                let html = '<strong>Поездки</strong><div style="margin-top:6px">';
+                legendEntries.forEach(function(e) {
+                    html += '<div class="item"><span class="swatch" style="background:' + e.color + '"></span><span>' + e.name + '</span></div>';
+                });
+                html += '</div>';
+                div.innerHTML = html;
+                return div;
+            };
+            legend.addTo(map);
+
+            // Подогнать вид по всем добавленным маршрутам
+            let allBounds = null;
+            Object.values(tripLayers).forEach(function(t) {
+                let b = t.featureGroup.getBounds();
+                if (b && b.isValid()) {
+                    if (!allBounds) allBounds = b;
+                    else allBounds = allBounds.extend(b);
+                }
+            });
+            if (allBounds && allBounds.isValid()) {
+                map.fitBounds(allBounds, { padding: [40,40] });
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

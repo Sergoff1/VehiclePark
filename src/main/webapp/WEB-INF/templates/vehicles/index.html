@@ -26,7 +26,7 @@
             <tr th:each="vehicle : ${pagedVehicles.getContent()}">
                 <td th:text="${vehicle.getId()}"/>
                 <td th:text="${vehicle.getModel().getBrandName() + ' ' + vehicle.getModel().getModelName()}"/>
-                <td th:text="${vehicle.getLicensePlateNumber()}"/>
+                <td><a th:href="@{/vehicles/{id}(id=${vehicle.id})}" th:text="${vehicle.getLicensePlateNumber()}"></a></td>
                 <td th:text="${vehicle.getMileageKm()}"/>
                 <td th:text="${vehicle.getProductionYear()}"/>
                 <td th:text="${vehicle.getColor()}"/>

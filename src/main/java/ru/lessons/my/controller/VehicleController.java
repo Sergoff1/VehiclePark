@@ -2,6 +2,7 @@ package ru.lessons.my.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.geojson.Feature;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,21 +13,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.lessons.my.converter.GeoPointToFeatureConverter;
 import ru.lessons.my.dto.PageResult;
 import ru.lessons.my.model.Enterprise;
 import ru.lessons.my.model.Manager;
+import ru.lessons.my.model.Trip;
 import ru.lessons.my.model.Vehicle;
 import ru.lessons.my.model.VehicleModel;
 import ru.lessons.my.security.ManagerDetails;
 import ru.lessons.my.security.SecurityUtils;
 import ru.lessons.my.service.EnterpriseService;
+import ru.lessons.my.service.GeoService;
 import ru.lessons.my.service.VehicleModelService;
 import ru.lessons.my.service.VehicleService;
 import ru.lessons.my.util.DateTimeUtils;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Locale;
 
 @Controller
 @RequestMapping("/vehicles")
@@ -37,7 +41,9 @@ public class VehicleController {
     private final VehicleService vehicleService;
     private final EnterpriseService enterpriseService;
     private final VehicleModelService modelService;
+    private final GeoService geoService;
     private final SecurityUtils securityUtils;
+    private final GeoPointToFeatureConverter toFeatureConverter;
 
     //Решил пока оставить этот метод, но сменить эндпоинт.
     //А вообще все автомобили получать нельзя, так что через некоторое время его следует убрать.
@@ -66,6 +72,42 @@ public class VehicleController {
         model.addAttribute("enterpriseId", enterpriseId);
         model.addAttribute("clientTimeZone", timeZone);
         return "vehicles/index";
+    }
+
+    @GetMapping("/{id}")
+    public String findVehicleById(@PathVariable("id") long id,
+                                  @AuthenticationPrincipal ManagerDetails managerDetails,
+                                  @RequestParam(value = "dateFrom",
+                                          defaultValue = "#{T(java.time.LocalDate).now().atStartOfDay()}")
+                                      LocalDateTime dateFrom,
+                                  @RequestParam(value = "dateTo",
+                                          defaultValue = "#{T(java.time.LocalDateTime).now().truncatedTo(T(java.time.temporal.ChronoUnit).MINUTES)}")
+                                      LocalDateTime dateTo,
+                                  Model model) {
+
+        Vehicle vehicle = vehicleService.findById(id);
+        Enterprise enterprise = vehicle.getEnterprise();
+
+        ZoneId timeZone = managerDetails.getTimeZone().getId().toLowerCase().contains("utc")
+                ? ZoneId.of(enterprise.getTimeZone())
+                : managerDetails.getTimeZone();
+
+        List<Trip> trips = geoService.getTripsByVehicleIdAndTimeRange(id,
+                DateTimeUtils.convertToUtc(dateFrom, timeZone),
+                DateTimeUtils.convertToUtc(dateTo, timeZone));
+
+        //Чтобы не тащить дополнительные зависимости для Jackson, конвертируем точки самостоятельно.
+        List<Feature> tracks = geoService.getGeoPointsByTrips(trips).stream()
+                .map(toFeatureConverter::convert)
+                .toList();
+
+        model.addAttribute("vehicle", vehicle);
+        model.addAttribute("clientTimeZone", timeZone);
+        model.addAttribute("trips", trips);
+        model.addAttribute("tracks", tracks);
+        model.addAttribute("dateFrom", dateFrom);
+        model.addAttribute("dateTo", dateTo);
+        return "vehicles/vehicle";
     }
 
     @GetMapping("/new")
