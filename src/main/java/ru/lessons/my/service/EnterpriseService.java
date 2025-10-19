@@ -8,7 +8,6 @@ import ru.lessons.my.dto.EnterpriseDto;
 import ru.lessons.my.model.Enterprise;
 import ru.lessons.my.model.Manager;
 import ru.lessons.my.repository.EnterpriseRepository;
-import ru.lessons.my.repository.ManagerRepository;
 
 import java.util.List;
 import java.util.Set;

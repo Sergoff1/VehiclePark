@@ -8,11 +8,12 @@ import ru.lessons.my.model.Driver;
 import ru.lessons.my.model.Enterprise;
 import ru.lessons.my.model.Vehicle;
 import ru.lessons.my.model.VehicleModel;
-import ru.lessons.my.repository.DriverRepository;
 import ru.lessons.my.service.DriverService;
 import ru.lessons.my.service.EnterpriseService;
 import ru.lessons.my.service.VehicleModelService;
+import ru.lessons.my.util.DateTimeUtils;
 
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -49,12 +50,15 @@ public class VehicleDtoToVehicleConverter implements Converter<VehicleDto, Vehic
             throw new RuntimeException("Этого водителя нет на указанном предприятии");
         }
 
+        ZoneId enterpriseTimeZone = ZoneId.of(enterprise.getTimeZone());
+
         return Vehicle.builder()
                 .id(source.getId())
                 .licensePlateNumber(source.getLicensePlateNumber())
                 .mileageKm(source.getMileageKm())
                 .productionYear(source.getProductionYear())
                 .purchasePriceRub(source.getPurchasePriceRub())
+                .purchaseDateTime(DateTimeUtils.convertToUtc(source.getPurchaseDateTime(), enterpriseTimeZone))
                 .color(source.getColor())
                 .enterprise(enterprise)
                 .model(model)

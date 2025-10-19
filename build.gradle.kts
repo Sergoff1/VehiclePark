@@ -26,6 +26,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.0")
     implementation("de.grundid.opendatalab:geojson-jackson:1.14")
+    implementation("com.opencsv:opencsv:5.12.0")
 
     implementation("com.graphhopper:directions-api-client-hc:10.2")
 

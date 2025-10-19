@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.lessons.my.converter.VehicleDtoToVehicleConverter;
-import ru.lessons.my.converter.VehicleToVehicleDtoConverter;
 import ru.lessons.my.dto.PageResult;
 import ru.lessons.my.dto.VehicleDto;
 import ru.lessons.my.model.Enterprise;
@@ -21,7 +20,6 @@ public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
     private final VehicleDtoToVehicleConverter toVehicleConverter;
-    private final VehicleToVehicleDtoConverter toVehicleDtoConverter;
 
     public List<Vehicle> findAll() {
         return vehicleRepository.findAll();

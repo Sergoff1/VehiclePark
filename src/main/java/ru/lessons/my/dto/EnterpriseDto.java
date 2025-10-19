@@ -1,5 +1,6 @@
 package ru.lessons.my.dto;
 
+import com.opencsv.bean.CsvIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,10 @@ public class EnterpriseDto {
     private Long id;
     private String name;
     private String city;
+    @CsvIgnore
     private List<Long> vehicleIds;
+    @CsvIgnore
     private List<Long> driverIds;
+    @CsvIgnore
     private List<Long> managerIds;
 }

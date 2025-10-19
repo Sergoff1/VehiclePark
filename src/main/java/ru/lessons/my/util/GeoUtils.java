@@ -5,6 +5,8 @@ import com.graphhopper.api.model.GHGeocodingEntry;
 import com.graphhopper.api.model.GHGeocodingRequest;
 import com.graphhopper.api.model.GHGeocodingResponse;
 import com.graphhopper.util.shapes.GHPoint;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -47,5 +49,24 @@ public class GeoUtils {
                 .filter(Objects::nonNull)
                 .distinct() //Некоторые значения могут совпадать, поэтому избавимся от дубликатов.
                 .collect(Collectors.joining(", "));
+    }
+
+    public static Point getPointByAddress(String address) {
+        GHGeocodingRequest request = new GHGeocodingRequest(
+                address,
+                "",
+                1);
+
+        GHGeocodingResponse response = ghGeocoding.geocode(request);
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        if (response.getHits().isEmpty()) {
+            return geometryFactory.createPoint(new Coordinate(0.0, 0.0));
+        }
+
+        double lat = response.getHits().getFirst().getPoint().getLat();
+        double lng = response.getHits().getFirst().getPoint().getLng();
+
+        return geometryFactory.createPoint(new Coordinate(lng, lat));
     }
 }

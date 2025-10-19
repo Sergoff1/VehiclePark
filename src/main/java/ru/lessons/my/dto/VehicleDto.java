@@ -1,11 +1,14 @@
 package ru.lessons.my.dto;
 
+import com.opencsv.bean.CsvDate;
+import com.opencsv.bean.CsvIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,5 +27,8 @@ public class VehicleDto {
     private int mileageKm;
     private String color;
     private int purchasePriceRub;
+    @CsvDate("MM/dd/yyyy HH:mm:ss")
+    private LocalDateTime purchaseDateTime;
+    @CsvIgnore
     private List<Long> driverIds;
 }
