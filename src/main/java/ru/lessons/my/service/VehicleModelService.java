@@ -3,7 +3,7 @@ package ru.lessons.my.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.lessons.my.model.VehicleModel;
+import ru.lessons.my.model.entity.VehicleModel;
 import ru.lessons.my.repository.VehicleModelRepository;
 
 import java.util.List;

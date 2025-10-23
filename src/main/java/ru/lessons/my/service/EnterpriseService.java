@@ -5,8 +5,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.lessons.my.dto.EnterpriseDto;
-import ru.lessons.my.model.Enterprise;
-import ru.lessons.my.model.Manager;
+import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Manager;
 import ru.lessons.my.repository.EnterpriseRepository;
 
 import java.util.List;

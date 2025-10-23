@@ -3,7 +3,7 @@ package ru.lessons.my.converter;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import ru.lessons.my.dto.TripDto;
-import ru.lessons.my.model.Trip;
+import ru.lessons.my.model.entity.Trip;
 import ru.lessons.my.util.DateTimeUtils;
 import ru.lessons.my.util.GeoUtils;
 

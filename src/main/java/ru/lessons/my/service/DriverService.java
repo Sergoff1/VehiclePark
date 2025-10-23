@@ -3,8 +3,8 @@ package ru.lessons.my.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.lessons.my.model.Driver;
-import ru.lessons.my.model.Enterprise;
+import ru.lessons.my.model.entity.Driver;
+import ru.lessons.my.model.entity.Enterprise;
 import ru.lessons.my.repository.DriverRepository;
 
 import java.util.Collection;

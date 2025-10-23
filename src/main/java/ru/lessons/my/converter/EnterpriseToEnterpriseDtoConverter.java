@@ -3,10 +3,10 @@ package ru.lessons.my.converter;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import ru.lessons.my.dto.EnterpriseDto;
-import ru.lessons.my.model.Driver;
-import ru.lessons.my.model.Enterprise;
-import ru.lessons.my.model.Manager;
-import ru.lessons.my.model.Vehicle;
+import ru.lessons.my.model.entity.Driver;
+import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Manager;
+import ru.lessons.my.model.entity.Vehicle;
 
 import java.util.List;
 

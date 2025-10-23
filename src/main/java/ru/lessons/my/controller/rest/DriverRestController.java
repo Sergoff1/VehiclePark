@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lessons.my.converter.DriverToDriverDtoConverter;
 import ru.lessons.my.dto.DriverDto;
-import ru.lessons.my.model.Enterprise;
-import ru.lessons.my.model.Manager;
+import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Manager;
 import ru.lessons.my.service.DriverService;
 import ru.lessons.my.service.ManagerService;
 

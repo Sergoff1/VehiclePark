@@ -13,8 +13,8 @@ import ru.lessons.my.dto.EnterpriseDto;
 import ru.lessons.my.dto.ExportResult;
 import ru.lessons.my.dto.TripDto;
 import ru.lessons.my.dto.VehicleDto;
-import ru.lessons.my.model.Enterprise;
-import ru.lessons.my.model.Vehicle;
+import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Vehicle;
 import ru.lessons.my.util.DateTimeUtils;
 
 import java.io.StringWriter;

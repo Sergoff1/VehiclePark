@@ -11,8 +11,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.Option;
-import ru.lessons.my.model.GeoPoint;
-import ru.lessons.my.model.Vehicle;
+import ru.lessons.my.model.entity.GeoPoint;
+import ru.lessons.my.model.entity.Vehicle;
 import ru.lessons.my.repository.GeoPointRepository;
 import ru.lessons.my.repository.VehicleRepository;
 

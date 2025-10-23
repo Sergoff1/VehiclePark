@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.lessons.my.model.Manager;
+import ru.lessons.my.model.entity.Manager;
 import ru.lessons.my.repository.ManagerRepository;
 import ru.lessons.my.security.ManagerDetails;
 import ru.lessons.my.util.TimeZoneContext;

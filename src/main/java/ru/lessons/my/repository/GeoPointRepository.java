@@ -4,8 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
-import ru.lessons.my.model.GeoPoint;
-import ru.lessons.my.model.Trip;
+import ru.lessons.my.model.entity.GeoPoint;
+import ru.lessons.my.model.entity.Trip;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

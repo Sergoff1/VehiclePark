@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.lessons.my.converter.VehicleDtoToVehicleConverter;
 import ru.lessons.my.dto.PageResult;
 import ru.lessons.my.dto.VehicleDto;
-import ru.lessons.my.model.Enterprise;
-import ru.lessons.my.model.Vehicle;
+import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Vehicle;
 import ru.lessons.my.repository.VehicleRepository;
 
 import java.util.Collection;

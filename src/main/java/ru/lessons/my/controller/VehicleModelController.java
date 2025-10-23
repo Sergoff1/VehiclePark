@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.lessons.my.model.VehicleModel;
+import ru.lessons.my.model.entity.VehicleModel;
 import ru.lessons.my.service.VehicleModelService;
 
 @Controller

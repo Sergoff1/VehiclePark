@@ -5,8 +5,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
-import ru.lessons.my.model.Enterprise;
-import ru.lessons.my.model.Manager;
+import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Manager;
 
 import java.util.HashMap;
 import java.util.List;

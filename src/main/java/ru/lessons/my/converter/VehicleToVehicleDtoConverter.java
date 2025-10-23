@@ -3,8 +3,8 @@ package ru.lessons.my.converter;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import ru.lessons.my.dto.VehicleDto;
-import ru.lessons.my.model.Driver;
-import ru.lessons.my.model.Vehicle;
+import ru.lessons.my.model.entity.Driver;
+import ru.lessons.my.model.entity.Vehicle;
 import ru.lessons.my.util.DateTimeUtils;
 
 import java.time.ZoneId;

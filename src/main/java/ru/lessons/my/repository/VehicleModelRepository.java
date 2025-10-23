@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
-import ru.lessons.my.model.VehicleModel;
+import ru.lessons.my.model.entity.VehicleModel;
 
 import java.util.List;
 import java.util.Optional;

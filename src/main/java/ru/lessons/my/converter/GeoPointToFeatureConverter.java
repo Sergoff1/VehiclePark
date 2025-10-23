@@ -4,7 +4,7 @@ import org.geojson.Feature;
 import org.geojson.Point;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import ru.lessons.my.model.GeoPoint;
+import ru.lessons.my.model.entity.GeoPoint;
 import ru.lessons.my.util.DateTimeUtils;
 
 import java.time.ZoneId;

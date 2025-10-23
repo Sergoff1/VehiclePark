@@ -1,4 +1,4 @@
-package ru.lessons.my.model;
+package ru.lessons.my.model.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

@@ -4,9 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
-import ru.lessons.my.model.Manager;
-
-import java.util.Optional;
+import ru.lessons.my.model.entity.Manager;
 
 @Repository
 public class ManagerRepository {

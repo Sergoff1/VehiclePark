@@ -16,8 +16,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lessons.my.converter.EnterpriseDtoToEnterpriseConverter;
 import ru.lessons.my.converter.EnterpriseToEnterpriseDtoConverter;
 import ru.lessons.my.dto.EnterpriseDto;
-import ru.lessons.my.model.Enterprise;
-import ru.lessons.my.model.Manager;
+import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Manager;
 import ru.lessons.my.security.SecurityUtils;
 import ru.lessons.my.service.EnterpriseService;
 

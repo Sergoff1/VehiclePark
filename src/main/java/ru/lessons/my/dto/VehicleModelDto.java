@@ -2,7 +2,7 @@ package ru.lessons.my.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import ru.lessons.my.model.VehicleModel;
+import ru.lessons.my.model.entity.VehicleModel;
 
 @Getter
 @Builder

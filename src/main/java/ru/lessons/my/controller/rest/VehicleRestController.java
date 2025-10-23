@@ -17,9 +17,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lessons.my.converter.VehicleToVehicleDtoConverter;
 import ru.lessons.my.dto.PageResult;
 import ru.lessons.my.dto.VehicleDto;
-import ru.lessons.my.model.Enterprise;
-import ru.lessons.my.model.Manager;
-import ru.lessons.my.model.Vehicle;
+import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Manager;
+import ru.lessons.my.model.entity.Vehicle;
 import ru.lessons.my.security.SecurityUtils;
 import ru.lessons.my.service.VehicleService;
 
