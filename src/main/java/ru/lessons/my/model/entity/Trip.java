@@ -30,21 +30,24 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_date")
     private LocalDateTime startDate;
 
-    @Column(name = "end_date", nullable = false)
+    @Column(name = "end_date")
     private LocalDateTime endDate;
+
+    @Column(name = "mileage")
+    private int mileageKm;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "start_geo_point_id", nullable = false)
+    @JoinColumn(name = "start_geo_point_id")
     private GeoPoint startPoint;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "end_geo_point_id", nullable = false)
+    @JoinColumn(name = "end_geo_point_id")
     private GeoPoint endPoint;
 }

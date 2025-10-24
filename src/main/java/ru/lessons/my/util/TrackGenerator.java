@@ -12,8 +12,10 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.Option;
 import ru.lessons.my.model.entity.GeoPoint;
+import ru.lessons.my.model.entity.Trip;
 import ru.lessons.my.model.entity.Vehicle;
 import ru.lessons.my.repository.GeoPointRepository;
+import ru.lessons.my.repository.TripRepository;
 import ru.lessons.my.repository.VehicleRepository;
 
 import java.time.LocalDateTime;
@@ -27,9 +29,11 @@ public class TrackGenerator {
     private static final int GENERATION_DELAY_MS = 5000;
 
     private final GeoPointRepository geoPointRepository;
+    private final TripRepository tripRepository;
     private final VehicleRepository vehicleRepository;
 
     //generate-track -v 1 --area 55.732992 37.573300 55.776088 37.658373
+    //generate-track -v 1 --area 55.395831 36.716619 55.930489 38.401575
     //todo Добавить параметр для ограничения количества точек
     @Command(description = "Create random track for vehicle")
     public String generateTrack(@Option(longNames = "vehicleId", shortNames = 'v', required = true) long vehicleId,
@@ -60,13 +64,28 @@ public class TrackGenerator {
         log.info("API calls remaining: {}", fullRes.getHeader("x-ratelimit-remaining", "0"));
 
         PointList points = fullRes.getBest().getPoints();
+        log.info("Получено {} точек", points.size());
         GeometryFactory geometryFactory = new GeometryFactory();
+        Trip trip = new Trip();
+        trip.setVehicle(vehicle);
+        trip.setMileageKm((int) Math.round(fullRes.getBest().getDistance() / 1000));
+        tripRepository.save(trip);
         for (int i = 0; i < points.size(); i++) {
             GeoPoint geoPoint = GeoPoint.builder()
                     .vehicle(vehicle)
                     .position(geometryFactory.createPoint(new Coordinate(points.getLon(i), points.getLat(i))))
                     .visitedAt(LocalDateTime.now())
+                    .trip(trip)
                     .build();
+
+            //todo Сделать нормально
+            if (i == 0) {
+                trip.setStartDate(geoPoint.getVisitedAt());
+                trip.setStartPoint(geoPoint);
+            } else if (i == points.size() - 1) {
+                trip.setEndDate(geoPoint.getVisitedAt());
+                trip.setEndPoint(geoPoint);
+            }
 
             geoPointRepository.save(geoPoint);
 
@@ -76,6 +95,7 @@ public class TrackGenerator {
                 throw new RuntimeException(e);
             }
         }
+        tripRepository.save(trip);
 
         return String.format("%d points created for vehicle %d", points.size(), vehicleId);
     }

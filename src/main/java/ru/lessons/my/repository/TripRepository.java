@@ -38,4 +38,19 @@ public class TripRepository {
                 .setParameter("endDate", endDate)
                 .getResultList();
     }
+
+    public List<Trip> getTripsByEnterpriseIdAndTimeRange(long enterpriseId, LocalDateTime startDate, LocalDateTime endDate) {
+        String query = """
+                SELECT t
+                FROM Trip t
+                WHERE t.vehicle.id in (SELECT v.id FROM Vehicle v WHERE v.enterprise.id = :enterpriseId)
+                    AND t.startDate >= :startDate AND t.endDate <= :endDate
+                """;
+
+        return entityManager.createQuery(query, Trip.class)
+                .setParameter("enterpriseId", enterpriseId)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .getResultList();
+    }
 }

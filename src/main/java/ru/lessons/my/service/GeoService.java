@@ -30,6 +30,10 @@ public class GeoService {
         return tripRepository.getTripsByVehicleIdAndTimeRange(vehicleId, startDate, endDate);
     }
 
+    public List<Trip> getTripsByEnterpriseIdAndTimeRange(long enterpriseId, LocalDateTime startDate, LocalDateTime endDate) {
+        return tripRepository.getTripsByEnterpriseIdAndTimeRange(enterpriseId, startDate, endDate);
+    }
+
     public void save(Trip trip) {
         tripRepository.save(trip);
     }

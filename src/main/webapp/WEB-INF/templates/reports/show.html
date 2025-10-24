@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Show report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+
+    <div class="container mt-4">
+        <h2 th:align="center" th:text="${report.getType().getDescription()}"></h2>
+        <p th:if="${report.getVehicleId() != null}">Авто: <span th:text="${report.getVehicleId()}"></span></p>
+        <p th:if="${report.getEnterpriseId() != null}">Предприятие: <span th:text="${report.getEnterpriseId()}"></span></p>
+        <p>Период: <span th:text="${report.getPeriod().getName()}"></span></p>
+        <p>С: <span th:text="${report.getStartDate()}"></span></p>
+        <p>По: <span th:text="${report.getEndDate()}"></span></p>
+
+        <table class="table table-bordered mt-3">
+            <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Значение</th> <!-- Завести поле в отчёте, где будет указано название для вывода?-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="entry : ${report.getValues()}">
+                <td th:text="${entry.key}"></td>
+                <td th:text="${entry.value}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
