@@ -34,7 +34,15 @@ public class GeoService {
         return tripRepository.getTripsByEnterpriseIdAndTimeRange(enterpriseId, startDate, endDate);
     }
 
+    public boolean isTripDatesOverlapExisting(long vehicleId, LocalDateTime startDate, LocalDateTime endDate) {
+        return tripRepository.isTripDatesOverlapExisting(vehicleId, startDate, endDate);
+    }
+
     public void save(Trip trip) {
         tripRepository.save(trip);
+    }
+
+    public void save(GeoPoint point) {
+        geoPointRepository.save(point);
     }
 }

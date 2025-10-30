@@ -55,6 +55,14 @@
     </table>
     <h1 th:align="center">Поездки</h1>
 
+    <form th:action="@{'/vehicles/' + ${vehicle.id} + '/importTrip'}" method="post" enctype="multipart/form-data">
+        <div class="container">
+            <input type="file" class="form-control" name="file" required>
+            <button type="submit" class="btn btn-primary mt-2 mb-2" id="subButton">Импортировать</button>
+            <div  class="alert alert-primary"  role="alert" th:if="${message != null}" th:text="${message}"></div>
+        </div>
+    </form>
+
     <form th:action="@{'/vehicles/' + ${vehicle.id}}" method="get">
         <div class="container">
             <div class="form-group">

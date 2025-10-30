@@ -53,4 +53,22 @@ public class TripRepository {
                 .setParameter("endDate", endDate)
                 .getResultList();
     }
+
+    public boolean isTripDatesOverlapExisting(long vehicleId, LocalDateTime startDate, LocalDateTime endDate) {
+        String query = """
+                SELECT t
+                FROM Trip t
+                WHERE t.vehicle.id = :vehicleId
+                    AND (:startDate BETWEEN t.startDate AND t.endDate
+                        OR :endDate BETWEEN t.startDate AND t.endDate
+                        OR t.startDate BETWEEN :startDate AND :endDate
+                        OR t.endDate BETWEEN :startDate AND :endDate)
+                """;
+
+        return !entityManager.createQuery(query, Trip.class)
+                .setParameter("vehicleId", vehicleId)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .getResultList().isEmpty();
+    }
 }

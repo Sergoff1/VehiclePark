@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.lessons.my.converter.GeoPointToFeatureConverter;
 import ru.lessons.my.dto.PageResult;
 import ru.lessons.my.model.entity.Enterprise;
@@ -24,6 +26,7 @@ import ru.lessons.my.security.ManagerDetails;
 import ru.lessons.my.security.SecurityUtils;
 import ru.lessons.my.service.EnterpriseService;
 import ru.lessons.my.service.GeoService;
+import ru.lessons.my.service.ImportService;
 import ru.lessons.my.service.VehicleModelService;
 import ru.lessons.my.service.VehicleService;
 import ru.lessons.my.util.DateTimeUtils;
@@ -41,6 +44,7 @@ public class VehicleController {
     private final VehicleService vehicleService;
     private final EnterpriseService enterpriseService;
     private final VehicleModelService modelService;
+    private final ImportService importService;
     private final GeoService geoService;
     private final SecurityUtils securityUtils;
     private final GeoPointToFeatureConverter toFeatureConverter;
@@ -181,5 +185,18 @@ public class VehicleController {
         vehicleService.deleteById(id);
         long enterpriseId = vehicle.getEnterprise().getId();
         return "redirect:/vehicles?enterpriseId=" + enterpriseId;
+    }
+
+    @PostMapping("/{id}/importTrip")
+    public String importVehicleTrip(@PathVariable("id") long id,
+                                    @RequestParam("file") MultipartFile file,
+                                    RedirectAttributes redirectAttrs) {
+
+        String message = importService.importGpxTrip(file, id)
+                ? "Поездка успешно импортирована."
+                : "Не удалось выполнить импорт, возможно есть пересечение по времени с имеющимися поездками.";
+
+        redirectAttrs.addFlashAttribute("message", message);
+        return "redirect:/vehicles/{id}";
     }
 }
