@@ -4,10 +4,16 @@ plugins {
 }
 
 group = "ru.lessons.my"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 tasks.withType<Test> {
