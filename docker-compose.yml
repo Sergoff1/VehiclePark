@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    container_name: VP_db
+    environment:
+      - POSTGRES_DB=vehiclePark
+      - POSTGRES_USER=park
+      - POSTGRES_PASSWORD=park_dev
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U park -d vehiclePark" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    container_name: VP_app
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=vehiclePark
+      - DB_USER=park
+      - DB_PASSWORD=park_dev
+      - HBM2DDL=validate
+      - JAVA_OPTS=-Duser.timezone=UTC
+      - GH_KEY=${GH_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
