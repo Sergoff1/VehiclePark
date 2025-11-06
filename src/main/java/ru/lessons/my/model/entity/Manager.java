@@ -1,13 +1,10 @@
 package ru.lessons.my.model.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,10 +31,7 @@ public class Manager {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name="manager_enterprise",
-            joinColumns=  @JoinColumn(name="manager_id", referencedColumnName="id"),
-            inverseJoinColumns= @JoinColumn(name="enterprise_id", referencedColumnName="id") )
+    @ManyToMany(mappedBy = "managers")
     @Fetch(FetchMode.JOIN)
     private Set<Enterprise> enterprises = new HashSet<>();
 

@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
@@ -48,7 +50,10 @@ public class Enterprise {
     private String timeZone = "UTC";
 
     @Builder.Default
-    @ManyToMany(mappedBy = "enterprises", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name="manager_enterprise",
+            joinColumns=  @JoinColumn(name="enterprise_id", referencedColumnName="id"),
+            inverseJoinColumns= @JoinColumn(name="manager_id", referencedColumnName="id") )
     private Set<Manager> managers = new HashSet<>();
 
     //todo Рассмотреть возможность использования коллекции чисел для простого хранения айдишников.

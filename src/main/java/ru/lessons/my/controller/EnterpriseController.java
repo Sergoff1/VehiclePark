@@ -45,9 +45,9 @@ public class EnterpriseController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateVehicle(@PathVariable("id") long id,
-                                @Valid @ModelAttribute Enterprise enterprise,
-                                BindingResult bindingResult) {
+    public String update(@PathVariable("id") long id,
+                         @Valid @ModelAttribute Enterprise enterprise,
+                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "enterprises/edit";
         }
