@@ -64,10 +64,9 @@ public class EnterpriseRestController {
     // Передавать дто в сервис и там выполнять конвертацию.
     @PostMapping
     public ResponseEntity<?> create(@RequestBody EnterpriseDto enterpriseDto) {
-        Manager manager = securityUtils.getCurrentManager();
         Enterprise newEnterprise = toEnterpriseConverter.convert(enterpriseDto);
 
-        enterpriseService.saveWithManager(newEnterprise, manager);
+        enterpriseService.saveWithCurrentManager(newEnterprise);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
