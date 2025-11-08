@@ -17,8 +17,8 @@ services:
   app:
     container_name: VP_app
     build: .
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -31,3 +31,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  nginx:
+    container_name: VP_nginx
+    image: nginx:1.29.3
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./src/main/resources/certs:/etc/ssl/certs:ro
+    depends_on:
+      - app
