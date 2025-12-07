@@ -35,6 +35,8 @@ dependencies {
     implementation("com.opencsv:opencsv:5.12.0")
     implementation("com.itextpdf:itext-core:9.3.0")
 
+    implementation("org.telegram:telegrambots:6.9.7.1")
+
     implementation("com.graphhopper:directions-api-client-hc:10.2")
 
     implementation("org.springframework.security:spring-security-web:6.5.2")
