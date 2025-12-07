@@ -2,6 +2,7 @@ package ru.lessons.my;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.lessons.my.config.BaseConfig;
+import ru.lessons.my.config.BotConfig;
 import ru.lessons.my.config.DbConfig;
 import ru.lessons.my.config.SecurityConfig;
 import ru.lessons.my.config.WebConfig;
@@ -12,6 +13,7 @@ public class Main {
                 BaseConfig.class,
                 WebConfig.class,
                 DbConfig.class,
-                SecurityConfig.class);
+                SecurityConfig.class,
+                BotConfig.class);
     }
 }
