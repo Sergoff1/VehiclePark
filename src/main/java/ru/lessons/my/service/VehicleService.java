@@ -30,6 +30,10 @@ public class VehicleService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Vehicle with id %s not found", id)));
     }
 
+    public Vehicle getByLicensePlateNumber(String licensePlateNumber) {
+        return vehicleRepository.getByLicensePlateNumber(licensePlateNumber);
+    }
+
     public List<Vehicle> findByEnterprises(Collection<Enterprise> enterprises) {
         return vehicleRepository.findByEnterprises(enterprises);
     }

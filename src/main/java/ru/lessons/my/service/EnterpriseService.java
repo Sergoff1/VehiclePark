@@ -26,6 +26,10 @@ public class EnterpriseService {
         return enterpriseRepository.findByManager(manager);
     }
 
+    public Enterprise getByName(String name) {
+        return enterpriseRepository.getByName(name);
+    }
+
     public Enterprise findById(Long id) {
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Enterprise with id %s not found", id)));
