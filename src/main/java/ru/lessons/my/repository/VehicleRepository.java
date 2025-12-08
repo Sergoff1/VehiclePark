@@ -44,6 +44,15 @@ public class VehicleRepository {
         return query.getResultList();
     }
 
+    //todo Можно доработать (регистр)
+    public Vehicle getByLicensePlateNumber(String licensePlateNumber) {
+        TypedQuery<Vehicle> query = entityManager.createQuery(
+                "SELECT v FROM Vehicle v WHERE v.licensePlateNumber = :licensePlateNumber", Vehicle.class);
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Vehicle.detail"));
+        query.setParameter("licensePlateNumber", licensePlateNumber);
+        return query.getSingleResult();
+    }
+
     public List<Vehicle> findByEnterprises(Collection<Enterprise> enterprises) {
         if (enterprises == null || enterprises.isEmpty()) {
             return Collections.emptyList();

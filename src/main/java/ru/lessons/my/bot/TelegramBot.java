@@ -10,9 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
-import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
@@ -23,18 +21,19 @@ import ru.lessons.my.model.Report;
 import ru.lessons.my.model.ReportPeriod;
 import ru.lessons.my.model.ReportType;
 import ru.lessons.my.model.entity.Manager;
+import ru.lessons.my.service.EnterpriseService;
 import ru.lessons.my.service.ManagerService;
 import ru.lessons.my.service.ReportService;
+import ru.lessons.my.service.VehicleService;
 
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//todo Тут бардак, многое можно рефакторить, но это будет потом.
+// Пока просто делаю нечто рабочее и проверяю идеи
 @Slf4j
 @Component
 @PropertySource("classpath:application.properties")
@@ -43,6 +42,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final ManagerService managerService;
     private final ReportService reportService;
     private final PasswordEncoder passwordEncoder;
+    private final EnterpriseService enterpriseService;
+    private final VehicleService vehicleService;
 
     private final Map<Long, Manager> authorizedManagers = new HashMap<>();
     private final Map<Long, LoginStates> loginStatesMap = new HashMap<>();
@@ -57,12 +58,16 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot(@Value("${bot.tg.token}") String botToken,
                        ManagerService managerService,
                        ReportService reportService,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       EnterpriseService enterpriseService,
+                       VehicleService vehicleService) {
 
         super(botToken);
         this.managerService =  managerService;
         this.reportService = reportService;
         this.passwordEncoder = passwordEncoder;
+        this.enterpriseService = enterpriseService;
+        this.vehicleService = vehicleService;
     }
 
     @PostConstruct
@@ -192,17 +197,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
 
                 reportStatesMap.put(message.getChatId(), ReportStates.AWAITING_ENTITY_ID);
-                sendMessage(message.getChatId(), "Введите идентификатор сущности(автомобиля или предприятия), по которой нужно сформировать отчёт");
+                sendMessage(message.getChatId(), "Введите номер автомобиля или название предприятия, по которому нужно сформировать отчёт");
             }
             case AWAITING_ENTITY_ID -> {
-                try {
-                    Long entityId = Long.parseLong(message.getText().trim());
-                    reportParametersMap.get(message.getChatId()).setEntityId(entityId);
-                } catch (NumberFormatException e) {
-                    sendMessage(message.getChatId(), "Не удалось распознать идентификатор(это должно быть число), попробуйте ещё раз.");
-                    return;
-                }
-
+                reportParametersMap.get(message.getChatId()).setEntityId(message.getText().trim());
                 reportStatesMap.put(message.getChatId(), ReportStates.AWAITING_REPORT_START_DATE);
                 sendMessage(message.getChatId(), "Укажите дату начала отчёта в формате ГГГГ-ММ-ДД");
             }
@@ -227,32 +225,24 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
 
                 try {
-                    PipedInputStream is = new PipedInputStream();
-                    PipedOutputStream os = new PipedOutputStream(is);
-
                     ReportParameters reportParameters = reportParametersMap.get(message.getChatId());
 
+                    //todo Тут бы поменять интерфейс, но это будет потом, пока добавлю пару лишних шагов.
+                    Long entityId;
+                    if (reportParameters.getReportType() == ReportType.VEHICLE_MILEAGE) {
+                        entityId = vehicleService.getByLicensePlateNumber(reportParameters.getEntityId()).getId();
+                    } else {
+                        entityId = enterpriseService.getByName(reportParameters.getEntityId()).getId();
+                    }
+
                     Report report = reportService.getReport(reportParameters.getReportType(),
-                            reportParameters.getEntityId(),
-                            reportParameters.getEntityId(),
+                            entityId,
+                            entityId,
                             reportParameters.getReportPeriod(),
                             reportParameters.getStartDate(),
                             reportParameters.getEndDate());
 
-                    //Piped стримы нормально работают в разных потоках, поэтому созадаём новый, а то будут дедлоки.
-                    new Thread(() -> {
-                        try (PipedOutputStream out = os) {
-                            reportService.writePdfToOutputStream(out, report);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
-
-                    execute(SendDocument.builder()
-                            .chatId(message.getChatId())
-                            .document(new InputFile(is, "report.pdf"))
-                            .caption("Файл с отчётом")
-                            .build());
+                    sendMessage(message.getChatId(), formatReport(report));
                 } catch (Exception e) {
                     sendMessage(message.getChatId(), "Не удалось сформировать отчёт, убедитесь в корректности введённых данных и попробуйте ещё раз." +
                                                      " Для повторной попытки введите команду /report");
@@ -313,6 +303,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         markup.setResizeKeyboard(true);
         markup.setOneTimeKeyboard(true);
         return markup;
+    }
+
+    private String formatReport(Report report) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Тип отчета: ").append(report.getType().getDescription()).append("\n");
+        sb.append("Период: ").append(report.getPeriod().getName()).append("\n");
+        sb.append("С ").append(report.getStartDate()).append(" по ").append(report.getEndDate()).append("\n");
+        sb.append("------\n");
+        report.getValues().forEach((k, v) -> sb.append(k).append(" : ").append(v).append(" км\n"));
+        return sb.toString();
     }
 
     private enum LoginStates {

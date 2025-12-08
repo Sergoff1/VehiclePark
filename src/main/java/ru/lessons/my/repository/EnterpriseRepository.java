@@ -35,6 +35,15 @@ public class EnterpriseRepository {
         return Optional.ofNullable(entityManager.find(Enterprise.class, id, hints));
     }
 
+    //todo Ненадёжно (регистр, исключения, одинаковые имена?)
+    public Enterprise getByName(String name) {
+        TypedQuery<Enterprise> query = entityManager.createQuery("SELECT e FROM Enterprise e WHERE e.name = :name", Enterprise.class);
+        query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));
+        query.setParameter("name", name);
+
+        return query.getSingleResult();
+    }
+
     public List<Enterprise> findAll() {
         TypedQuery<Enterprise> query = entityManager.createQuery("SELECT e FROM Enterprise e", Enterprise.class);
         query.setHint("jakarta.persistence.fetchgraph", entityManager.getEntityGraph("Enterprise.detail"));

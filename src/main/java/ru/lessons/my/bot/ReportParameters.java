@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class ReportParameters {
     private ReportType reportType;
     private ReportPeriod reportPeriod;
-    private Long entityId;
+    private String entityId;
     private LocalDate startDate;
     private LocalDate endDate;
 }
