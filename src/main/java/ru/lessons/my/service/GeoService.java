@@ -2,7 +2,9 @@ package ru.lessons.my.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.lessons.my.bot.TelegramBot;
 import ru.lessons.my.model.entity.GeoPoint;
+import ru.lessons.my.model.entity.Manager;
 import ru.lessons.my.model.entity.Trip;
 import ru.lessons.my.repository.GeoPointRepository;
 import ru.lessons.my.repository.TripRepository;
@@ -10,6 +12,8 @@ import ru.lessons.my.repository.TripRepository;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +21,7 @@ public class GeoService {
 
     private final GeoPointRepository geoPointRepository;
     private final TripRepository tripRepository;
+    private final TelegramBot telegramBot;
 
     public List<GeoPoint> getGeoPointsByTimeRange(long vehicleId, LocalDateTime dateFrom, LocalDateTime dateTo) {
         return geoPointRepository.getGeoPointsByVehicleIdAndTimeRange(vehicleId, dateFrom, dateTo);
@@ -40,6 +45,12 @@ public class GeoService {
 
     public void save(Trip trip) {
         tripRepository.save(trip);
+        Set<Long> managerIds = trip.getVehicle().getEnterprise().getManagers().stream()
+                .map(Manager::getId)
+                .collect(Collectors.toSet());
+
+        //todo Циклическая зависимость. Исправить, когда перейдём на работу с сообщениями
+        telegramBot.notifyAboutTrip(managerIds, trip.getVehicle().getEnterprise().getName());
     }
 
     public void save(GeoPoint point) {

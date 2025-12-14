@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 //todo Тут бардак, многое можно рефакторить, но это будет потом.
 // Пока просто делаю нечто рабочее и проверяю идеи
@@ -57,7 +59,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     public TelegramBot(@Value("${bot.tg.token}") String botToken,
                        ManagerService managerService,
-                       ReportService reportService,
+                       //Изменить архитектуру, чтобы такого не было
+                       @Lazy ReportService reportService,
                        PasswordEncoder passwordEncoder,
                        EnterpriseService enterpriseService,
                        VehicleService vehicleService) {
@@ -101,6 +104,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return botName;
+    }
+
+    public void notifyAboutTrip(Set<Long> managerIds, String enterpriseName) {
+        authorizedManagers.entrySet()
+                .stream()
+                .filter(e -> managerIds.contains(e.getValue().getId()))
+                .forEach(e -> sendMessage(e.getKey(), String.format("В \"%s\" оформлена новая поездка.", enterpriseName)));
     }
 
     private void handleStartCommand(Message message) {
