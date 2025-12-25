@@ -46,9 +46,7 @@ public class VehicleRestController {
             return Collections.emptyList();
         }
 
-        Set<Enterprise> enterprises = manager.getEnterprises();
-
-        return vehicleService.findByEnterprises(enterprises).stream()
+        return vehicleService.findByManager(manager).stream()
                 .map(toVehicleDtoConverter::convert)
                 .toList();
     }

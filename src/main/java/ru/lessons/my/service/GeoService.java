@@ -1,6 +1,8 @@
 package ru.lessons.my.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.lessons.my.bot.TelegramBot;
 import ru.lessons.my.model.entity.GeoPoint;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GeoService {
@@ -23,7 +26,9 @@ public class GeoService {
     private final TripRepository tripRepository;
     private final TelegramBot telegramBot;
 
+    @Cacheable("geoPointsByTrips")
     public List<GeoPoint> getGeoPointsByTimeRange(long vehicleId, LocalDateTime dateFrom, LocalDateTime dateTo) {
+        log.info("getGeoPoints from DB");
         return geoPointRepository.getGeoPointsByVehicleIdAndTimeRange(vehicleId, dateFrom, dateTo);
     }
 

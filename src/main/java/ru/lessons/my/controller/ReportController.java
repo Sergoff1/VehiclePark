@@ -38,7 +38,7 @@ public class ReportController {
         Manager manager = securityUtils.getCurrentManager();
         List<Enterprise> enterprises = enterpriseService.findByManager(manager);
         //todo Опасная штука, при большом количестве автомобилей. Может руками задавать айдишник?
-        List<Vehicle> vehicles = vehicleService.findByEnterprises(enterprises);
+        List<Vehicle> vehicles = vehicleService.findByManager(manager);
 
         model.addAttribute("vehicles", vehicles);
         model.addAttribute("enterprises", enterprises);

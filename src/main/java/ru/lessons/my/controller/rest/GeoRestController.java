@@ -44,8 +44,7 @@ public class GeoRestController {
         LocalDateTime utcFrom = DateTimeUtils.convertToUtc(dateFrom, enterpriseTimeZone);
         LocalDateTime utcTo = DateTimeUtils.convertToUtc(dateTo, enterpriseTimeZone);
 
-        List<Trip> trips = geoService.getTripsByVehicleIdAndTimeRange(vehicleId, utcFrom, utcTo);
-        List<GeoPoint> tracks = geoService.getGeoPointsByTrips(trips);
+        List<GeoPoint> tracks = geoService.getGeoPointsByTimeRange(vehicleId, utcFrom, utcTo);
 
         return "geojson".equalsIgnoreCase(format)
                 ? tracks.stream().map(toFeatureConverter::convert).toList()

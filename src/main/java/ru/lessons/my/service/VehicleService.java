@@ -3,17 +3,21 @@ package ru.lessons.my.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.lessons.my.converter.VehicleDtoToVehicleConverter;
 import ru.lessons.my.dto.PageResult;
 import ru.lessons.my.dto.VehicleDto;
 import ru.lessons.my.model.entity.Enterprise;
+import ru.lessons.my.model.entity.Manager;
 import ru.lessons.my.model.entity.Vehicle;
 import ru.lessons.my.repository.VehicleRepository;
 
 import java.util.Collection;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VehicleService {
@@ -36,6 +40,12 @@ public class VehicleService {
 
     public List<Vehicle> findByEnterprises(Collection<Enterprise> enterprises) {
         return vehicleRepository.findByEnterprises(enterprises);
+    }
+
+    @Cacheable(value = "vehiclesByManager", key = "#p0.id")
+    public List<Vehicle> findByManager(Manager manager) {
+        log.info("vehicles from DB");
+        return vehicleRepository.findByEnterprises(manager.getEnterprises());
     }
 
     //todo подумать над кастомизацией фильтрации

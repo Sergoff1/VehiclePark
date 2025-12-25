@@ -14,6 +14,7 @@ import ru.lessons.my.repository.EnterpriseRepository;
 import ru.lessons.my.repository.VehicleModelRepository;
 import ru.lessons.my.repository.VehicleRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,6 +81,7 @@ public class VehicleGenerator {
                         .licensePlateNumber(String.valueOf(System.nanoTime()))
                         .productionYear(rand.nextInt(1900, 2026))
                         .purchasePriceRub(rand.nextInt(500000, 20000000))
+                        .purchaseDateTime(LocalDateTime.now())
                         .enterprise(enterpriseOpt.get())
                         .model(models.get(rand.nextInt(models.size())))
                         .drivers(driversSet)
