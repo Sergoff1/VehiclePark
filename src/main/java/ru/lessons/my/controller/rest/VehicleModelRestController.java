@@ -2,10 +2,7 @@ package ru.lessons.my.controller.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.lessons.my.converter.VehicleModelToVehicleModelDtoConverter;
 import ru.lessons.my.dto.VehicleModelDto;
 import ru.lessons.my.service.VehicleModelService;
@@ -30,5 +27,10 @@ public class VehicleModelRestController {
     @GetMapping("{id}")
     public VehicleModelDto findById(@PathVariable("id") long id) {
         return modelToModelDtoConverter.convert(vehicleModelService.findById(id));
+    }
+
+    @GetMapping("/name")
+    public VehicleModelDto findByName(@RequestParam("name") String name) {
+        return modelToModelDtoConverter.convert(vehicleModelService.findByName(name));
     }
 }

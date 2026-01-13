@@ -25,11 +25,14 @@ public class VehicleService {
     private final VehicleRepository vehicleRepository;
     private final VehicleDtoToVehicleConverter toVehicleConverter;
 
+    @Cacheable("AllVehicles")
     public List<Vehicle> findAll() {
         return vehicleRepository.findAll();
     }
 
+    @Cacheable("VehicleById")
     public Vehicle findById(Long id) {
+        log.info("Find vehicle by id: {}", id);
         return vehicleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Vehicle with id %s not found", id)));
     }

@@ -28,6 +28,12 @@ public class VehicleModelRepository {
         return Optional.ofNullable(entityManager.find(VehicleModel.class, id));
     }
 
+    public Optional<VehicleModel> findByModelName(String name) {
+        return Optional.ofNullable(entityManager.createQuery("from VehicleModel vm where vm.modelName = :name", VehicleModel.class)
+                .setParameter("name", name)
+                .getSingleResult());
+    }
+
     public List<VehicleModel> findAll() {
         return entityManager.createQuery("from VehicleModel", VehicleModel.class).getResultList();
     }

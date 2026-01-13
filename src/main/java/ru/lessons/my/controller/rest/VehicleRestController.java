@@ -1,18 +1,11 @@
 package ru.lessons.my.controller.rest;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lessons.my.converter.VehicleToVehicleDtoConverter;
 import ru.lessons.my.dto.PageResult;
@@ -29,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -38,8 +32,16 @@ public class VehicleRestController {
     private final VehicleToVehicleDtoConverter toVehicleDtoConverter;
     private final SecurityUtils securityUtils;
 
+    //Для тестов кэширования
+    @GetMapping("/all")
+    public List<VehicleDto> findAllVehicles() {
+        return vehicleService.findAll().stream()
+                .map(toVehicleDtoConverter::convert)
+                .toList();
+    }
+
     @GetMapping
-    public List<VehicleDto> findAll() {
+    public List<VehicleDto> findAllForCurrentManager() {
         Manager manager = securityUtils.getCurrentManager();
 
         if (manager == null) {
@@ -89,7 +91,7 @@ public class VehicleRestController {
                     .body("Нельзя просматривать автомобили стороннего предприятия");
         }
 
-        return ResponseEntity.ok().body(toVehicleDtoConverter.convert(vehicleService.findById(id)));
+        return ResponseEntity.ok().body(toVehicleDtoConverter.convert(vehicle));
     }
 
     @PostMapping
