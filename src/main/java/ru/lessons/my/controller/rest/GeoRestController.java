@@ -1,6 +1,7 @@
 package ru.lessons.my.controller.rest;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/v1")
 @RequiredArgsConstructor
@@ -46,6 +48,7 @@ public class GeoRestController {
 
         List<GeoPoint> tracks = geoService.getGeoPointsByTimeRange(vehicleId, utcFrom, utcTo);
 
+        log.info("Found {} geoPoints for vehicle {}", tracks.size(), vehicleId);
         return "geojson".equalsIgnoreCase(format)
                 ? tracks.stream().map(toFeatureConverter::convert).toList()
                 : tracks.stream().map(toGeoPointDtoConverter::convert).toList();

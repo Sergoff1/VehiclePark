@@ -28,7 +28,7 @@ public class VehicleModelService {
 
     @Cacheable("vehicleModelByName")
     public VehicleModel findByName(String name) {
-        log.info("GetVehicleModel from DB");
+        log.info("get vehicle model by name '{}' from DB", name);
         return vehicleModelRepository.findByModelName(name)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Vehicle Model with model name %s not found", name)));
     }

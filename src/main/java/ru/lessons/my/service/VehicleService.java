@@ -27,6 +27,7 @@ public class VehicleService {
 
     @Cacheable("AllVehicles")
     public List<Vehicle> findAll() {
+        log.info("Find all vehicles from DB");
         return vehicleRepository.findAll();
     }
 
@@ -47,7 +48,7 @@ public class VehicleService {
 
     @Cacheable(value = "vehiclesByManager", key = "#p0.id")
     public List<Vehicle> findByManager(Manager manager) {
-        log.info("vehicles from DB");
+        log.info("get vehicles from DB for manager: {}", manager.getUsername());
         return vehicleRepository.findByEnterprises(manager.getEnterprises());
     }
 

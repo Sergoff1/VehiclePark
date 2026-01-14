@@ -28,7 +28,7 @@ public class GeoService {
 
     @Cacheable("geoPointsByTrips")
     public List<GeoPoint> getGeoPointsByTimeRange(long vehicleId, LocalDateTime dateFrom, LocalDateTime dateTo) {
-        log.info("getGeoPoints from DB");
+        log.info("get GeoPoints from DB for vehicle {}", vehicleId);
         return geoPointRepository.getGeoPointsByVehicleIdAndTimeRange(vehicleId, dateFrom, dateTo);
     }
 

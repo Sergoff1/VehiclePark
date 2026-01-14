@@ -35,9 +35,12 @@ public class VehicleRestController {
     //Для тестов кэширования
     @GetMapping("/all")
     public List<VehicleDto> findAllVehicles() {
-        return vehicleService.findAll().stream()
+        List<VehicleDto> vehicles = vehicleService.findAll().stream()
                 .map(toVehicleDtoConverter::convert)
                 .toList();
+
+        log.info("Found {} vehicles", vehicles.size());
+        return vehicles;
     }
 
     @GetMapping
@@ -48,9 +51,12 @@ public class VehicleRestController {
             return Collections.emptyList();
         }
 
-        return vehicleService.findByManager(manager).stream()
+        List<VehicleDto> vehicles = vehicleService.findByManager(manager).stream()
                 .map(toVehicleDtoConverter::convert)
                 .toList();
+
+        log.info("Found {} vehicles for {}", vehicles.size(), manager.getUsername());
+        return vehicles;
     }
 
     //todo для эскпериментов выделил версию с пагинацией в отдельный эндпоинт

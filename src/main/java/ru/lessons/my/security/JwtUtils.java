@@ -22,7 +22,7 @@ public class JwtUtils {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .expiresAt(now.plus(1, ChronoUnit.DAYS))
                 .subject(auth.getName())
                 .claim("scp", auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .build();
