@@ -44,3 +44,4 @@ bin/
 
 src/main/resources/certs/
 .env
+opentelemetry-javaagent.jar
