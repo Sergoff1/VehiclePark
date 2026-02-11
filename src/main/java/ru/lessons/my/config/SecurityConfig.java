@@ -36,6 +36,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/reactive/**").permitAll()
                         .requestMatchers("/api/v1/login").permitAll()
                         .requestMatchers("/api/**").access(hasScope("API"))
                         .anyRequest()

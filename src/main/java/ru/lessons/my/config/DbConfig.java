@@ -1,13 +1,18 @@
 package ru.lessons.my.config;
 
+import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
+import io.r2dbc.postgresql.PostgresqlConnectionFactory;
+import io.r2dbc.spi.ConnectionFactory;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -59,5 +64,28 @@ public class DbConfig {
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
         return new JpaTransactionManager(emf);
+    }
+
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        return new PostgresqlConnectionFactory(
+                PostgresqlConnectionConfiguration.builder()
+                        .host("localhost")
+                        .port(5432)
+                        .database("vehiclePark")
+                        .username(dbUsername)
+                        .password(dbPassword)
+                        .build()
+        );
+    }
+
+    @Bean
+    public DatabaseClient databaseClient() {
+        return DatabaseClient.create(connectionFactory());
+    }
+
+    @Bean
+    public R2dbcEntityTemplate entityTemplate() {
+        return new R2dbcEntityTemplate(connectionFactory());
     }
 }
