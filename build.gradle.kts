@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("war")
+    id("io.gatling.gradle") version "3.15.0"
 }
 
 group = "ru.lessons.my"
@@ -38,6 +39,9 @@ dependencies {
     implementation("io.opentelemetry:opentelemetry-api:1.58.0")
     implementation("io.opentelemetry:opentelemetry-sdk:1.58.0")
     implementation("io.opentelemetry.semconv:opentelemetry-semconv:1.37.0")
+
+    implementation("io.gatling:gatling-app:3.15.0")
+    implementation("io.gatling.highcharts:gatling-charts-highcharts:3.15.0")
 
     implementation("org.telegram:telegrambots:6.9.7.1")
 
