@@ -21,6 +21,7 @@ public class VehicleModelService {
         return vehicleModelRepository.findAll();
     }
 
+    @Cacheable("ModelById")
     public VehicleModel findById(Long id) {
         return vehicleModelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Vehicle Model with id %s not found", id)));

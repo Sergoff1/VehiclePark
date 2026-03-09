@@ -2,7 +2,10 @@ package ru.lessons.my.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import ru.lessons.my.converter.DriverDtoToDriverConverter;
+import ru.lessons.my.dto.DriverDto;
 import ru.lessons.my.model.entity.Driver;
 import ru.lessons.my.model.entity.Enterprise;
 import ru.lessons.my.repository.DriverRepository;
@@ -15,6 +18,7 @@ import java.util.List;
 public class DriverService {
 
     private final DriverRepository driverRepository;
+    private final DriverDtoToDriverConverter toDriverConverter;
 
     public List<Driver> findAll() {
         return driverRepository.findAll();
@@ -25,8 +29,15 @@ public class DriverService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Driver with id %s not found", id)));
     }
 
+    @Cacheable("DriversInEnterprises")
     public List<Driver> findByEnterprises(Collection<Enterprise> enterprises) {
         return driverRepository.findByEnterprises(enterprises);
+    }
+
+    public Driver saveAndGet(DriverDto driverDto) {
+        Driver driver = toDriverConverter.convert(driverDto);
+        driverRepository.save(driver);
+        return driver;
     }
 
     public void save(Driver driver) {

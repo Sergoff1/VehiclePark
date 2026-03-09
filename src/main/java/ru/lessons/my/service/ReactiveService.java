@@ -5,12 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import ru.lessons.my.dto.GeoPointDto;
 import ru.lessons.my.model.entity.GeoPoint;
 import ru.lessons.my.model.entity.Trip;
@@ -26,7 +22,7 @@ public class ReactiveService {
     private final ReactiveGeoPointRepository trackRepository;
     private final ReactiveTripRepository tripRepository;
     private final ReactiveVehicleRepository vehicleRepository;
-    private final WebClient webClient;
+//    private final WebClient webClient;
     private final GeometryFactory geometryFactory;
 
     ReactiveService(ReactiveGeoPointRepository trackRepository,
@@ -35,28 +31,28 @@ public class ReactiveService {
         this.trackRepository = trackRepository;
         this.vehicleRepository = vehicleRepository;
         this.tripRepository = tripRepository;
-        this.webClient = WebClient.builder().baseUrl("http://localhost:8888").build();
+//        this.webClient = WebClient.builder().baseUrl("http://localhost:8888").build();
         this.geometryFactory = new GeometryFactory();
     }
 
     @PostConstruct
     public void startConsuming() {
-        consumeDataStream()
-                .subscribeOn(Schedulers.boundedElastic())
-                .subscribe();
+//        consumeDataStream()
+//                .subscribeOn(Schedulers.boundedElastic())
+//                .subscribe();
     }
 
-    private Flux<GeoPoint> consumeDataStream() {
-        return webClient.get()
-                .uri("/generator/track")
-                .accept(MediaType.TEXT_EVENT_STREAM)
-                .retrieve()
-                .bodyToFlux(GeoPointDto.class)
-                .doOnNext(data -> log.info("Получено: {}", data))
-                .flatMap(this::processAndSave)
-                .doOnError(error -> log.error("Ошибка: {}", error.getMessage()))
-                .retry(3);
-    }
+//    private Flux<GeoPoint> consumeDataStream() {
+//        return webClient.get()
+//                .uri("/generator/track")
+//                .accept(MediaType.TEXT_EVENT_STREAM)
+//                .retrieve()
+//                .bodyToFlux(GeoPointDto.class)
+//                .doOnNext(data -> log.info("Получено: {}", data))
+//                .flatMap(this::processAndSave)
+//                .doOnError(error -> log.error("Ошибка: {}", error.getMessage()))
+//                .retry(3);
+//    }
 
     private Mono<GeoPoint> processAndSave(GeoPointDto data) {
         //Можно сразу оперировать id и не ходить в БД, поскольку я сменил подход. Но для экспериментов пока оставлю как есть.

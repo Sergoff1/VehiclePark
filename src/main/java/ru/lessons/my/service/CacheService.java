@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CacheService {
 
-    @CacheEvict(allEntries = true, cacheNames = {"geoPointsByTrips", "vehiclesByManager", "vehicleModelByName", "VehicleById", "AllVehicles"})
+    @CacheEvict(allEntries = true, cacheNames = {"geoPointsByTrips", "vehiclesByManager", "vehicleModelByName",
+            "VehicleById", "AllVehicles", "ManagerByName", "DriversInEnterprises", "EntepriseById", "ModelById"})
     public void cleanCache() {
         log.info("Clean cache");
     }

@@ -2,6 +2,7 @@ package ru.lessons.my.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.lessons.my.dto.EnterpriseDto;
 import ru.lessons.my.model.entity.Enterprise;
@@ -30,6 +31,7 @@ public class EnterpriseService {
         return enterpriseRepository.getByName(name);
     }
 
+    @Cacheable("EntepriseById")
     public Enterprise findById(Long id) {
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Enterprise with id %s not found", id)));
