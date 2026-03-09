@@ -1,5 +1,7 @@
 package ru.lessons.my.config;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
@@ -9,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.r2dbc.core.DatabaseClient;
@@ -35,12 +36,17 @@ public class DbConfig {
 
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setDriverClassName(dbDriver);
-        ds.setUrl(dbUrl);
-        ds.setUsername(dbUsername);
-        ds.setPassword(dbPassword);
-        return ds;
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName(dbDriver);
+        config.setJdbcUrl(dbUrl);
+        config.setUsername(dbUsername);
+        config.setPassword(dbPassword);
+        config.setMaximumPoolSize(100);
+        config.setMinimumIdle(100);
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        return new HikariDataSource(config);
     }
 
     @Bean

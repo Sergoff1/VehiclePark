@@ -50,6 +50,7 @@ dependencies {
     implementation("org.springframework:spring-webflux:6.2.8")
     implementation("org.springframework.data:spring-data-r2dbc:3.4.13")
     implementation("org.postgresql:r2dbc-postgresql:1.1.1.RELEASE")
+    implementation("com.zaxxer:HikariCP:7.0.2")
 
     implementation("org.springframework.security:spring-security-web:6.5.2")
     implementation("org.springframework.security:spring-security-config:6.5.2")
