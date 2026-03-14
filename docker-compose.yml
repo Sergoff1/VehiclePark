@@ -34,7 +34,7 @@ services:
       - OTEL_SERVICE_NAME=vehiclePark
       - GH_KEY=${GH_KEY}
     volumes:
-      - ./opentelemetry-javaagent.jar:/opentelemetry-javaagent.jar
+      - ./app/opentelemetry-javaagent.jar:/opentelemetry-javaagent.jar
     depends_on:
       db:
         condition: service_healthy
