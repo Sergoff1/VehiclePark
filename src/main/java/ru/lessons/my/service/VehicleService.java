@@ -80,4 +80,8 @@ public class VehicleService {
     public void deleteById(Long id) {
         vehicleRepository.deleteById(id);
     }
+
+    public void delete(Vehicle vehicle) {
+        vehicleRepository.delete(vehicle);
+    }
 }

@@ -182,7 +182,7 @@ public class VehicleController {
     @GetMapping("/delete/{id}")
     public String deleteVehicle(@PathVariable("id") long id) {
         Vehicle vehicle = vehicleService.findById(id);
-        vehicleService.deleteById(id);
+        vehicleService.delete(vehicle);
         long enterpriseId = vehicle.getEnterprise().getId();
         return "redirect:/vehicles?enterpriseId=" + enterpriseId;
     }

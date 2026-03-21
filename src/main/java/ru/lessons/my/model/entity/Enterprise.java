@@ -50,7 +50,7 @@ public class Enterprise {
     private String timeZone = "UTC";
 
     @Builder.Default
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(name="manager_enterprise",
             joinColumns=  @JoinColumn(name="enterprise_id", referencedColumnName="id"),
             inverseJoinColumns= @JoinColumn(name="manager_id", referencedColumnName="id") )

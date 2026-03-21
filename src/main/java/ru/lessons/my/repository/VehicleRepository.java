@@ -90,4 +90,8 @@ public class VehicleRepository {
                 .setParameter("id", id)
                 .executeUpdate();
     }
+
+    public void delete(Vehicle vehicle) {
+        entityManager.remove(vehicle);
+    }
 }

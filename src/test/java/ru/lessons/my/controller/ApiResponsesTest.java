@@ -1,21 +1,16 @@
 package ru.lessons.my.controller;
 
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.lessons.my.config.BaseConfig;
-import ru.lessons.my.config.SecurityConfig;
-import ru.lessons.my.config.TestDbConfig;
+import ru.lessons.my.BaseIntegrationTest;
 import ru.lessons.my.config.WebConfig;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -29,11 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {BaseConfig.class, TestDbConfig.class, WebConfig.class, SecurityConfig.class})
+@ContextConfiguration(classes = {WebConfig.class})
 @WebAppConfiguration
-@Transactional
-public class ApiResponsesTest {
+public class ApiResponsesTest extends BaseIntegrationTest {
 
     @Autowired
     private WebApplicationContext wac;
@@ -108,7 +101,7 @@ public class ApiResponsesTest {
 
     @Test
     void whenInconsistentRemoveWhenOnlyManagersExists_then409() throws Exception {
-        mockMvc.perform(delete("/api/v1/enterprises/4")
+        mockMvc.perform(delete("/api/v1/enterprises/2")
                         .with(jwt().jwt(jwt -> jwt.subject("manager1")).authorities(() -> "SCOPE_API")))
                 .andExpect(status().isConflict());
     }
@@ -128,7 +121,7 @@ public class ApiResponsesTest {
                     "city": "UpdatedCity"
                 }
                 """;
-        mockMvc.perform(put("/api/v1/enterprises/4")
+        mockMvc.perform(put("/api/v1/enterprises/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                         .with(jwt().jwt(jwt -> jwt.subject("manager1")).authorities(() -> "SCOPE_API")))
@@ -152,6 +145,6 @@ public class ApiResponsesTest {
                 .andExpect(header().string("Location", "http://localhost/api/v1/enterprises/5"))
                 .andExpect(jsonPath("$.id").value(5))
                 .andExpect(jsonPath("$.name").value("newName"))
-                .andExpect(jsonPath("$.managerIds[0]").value(1));
+                .andExpect(jsonPath("$.manager_ids[0]").value(1));
     }
 }

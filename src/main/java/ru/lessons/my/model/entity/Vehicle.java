@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -83,5 +84,13 @@ public class Vehicle {
             joinColumns=  @JoinColumn(name="vehicle_id", referencedColumnName="id"),
             inverseJoinColumns= @JoinColumn(name="driver_id", referencedColumnName="id") )
     private Set<Driver> drivers = new HashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "vehicle", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<Trip> trips = new HashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "vehicle", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<GeoPoint> geoPoints = new HashSet<>();
 
 }
