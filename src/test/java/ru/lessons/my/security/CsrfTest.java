@@ -14,6 +14,7 @@ import ru.lessons.my.config.WebConfig;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = {WebConfig.class})
@@ -48,11 +49,12 @@ public class CsrfTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void loginWhenCorrectCsrfTokenThenOk() throws Exception {
+    public void loginWhenCorrectCsrfTokenThenRedirectToEnterprises() throws Exception {
         this.mockMvc.perform(post("/login").with(csrf())
                         .accept(MediaType.TEXT_HTML)
-                        .param("username", "user")
+                        .param("username", "manager1")
                         .param("password", "password"))
-                .andExpect(status().isOk());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/enterprises"));
     }
 }

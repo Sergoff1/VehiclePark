@@ -11,7 +11,8 @@ public class PostgresContainer {
                 "postgis/postgis:17-3.5").asCompatibleSubstituteFor("postgres"))
                 .withDatabaseName("park")
                 .withUsername("test")
-                .withPassword("test");
+                .withPassword("test")
+                .withInitScripts("db/schema.sql", "db/data.sql");
 
         CONTAINER.start();
     }

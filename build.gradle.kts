@@ -81,6 +81,7 @@ dependencies {
     testImplementation("org.glassfish:jakarta.el:4.0.2")
     testImplementation("org.hamcrest:hamcrest:3.0")
     testImplementation("com.jayway.jsonpath:json-path:2.9.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {

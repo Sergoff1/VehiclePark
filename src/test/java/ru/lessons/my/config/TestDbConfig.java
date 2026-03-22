@@ -2,15 +2,17 @@ package ru.lessons.my.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
+import io.r2dbc.postgresql.PostgresqlConnectionFactory;
+import io.r2dbc.spi.ConnectionFactory;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -47,14 +49,24 @@ public class TestDbConfig {
     }
 
     @Bean
-    public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
-        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScripts(new ClassPathResource("db/schema.sql"),
-                new ClassPathResource("db/data.sql"));
-        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
-        dataSourceInitializer.setDataSource(dataSource);
-        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
-        return dataSourceInitializer;
+    public ConnectionFactory connectionFactory() {
+        return new PostgresqlConnectionFactory(
+                PostgresqlConnectionConfiguration.builder()
+                        .addHost("localhost")
+                        .database("park")
+                        .username(PostgresContainer.getUsername())
+                        .password(PostgresContainer.getPassword())
+                        .build()
+        );
     }
 
+    @Bean
+    public DatabaseClient databaseClient() {
+        return DatabaseClient.create(connectionFactory());
+    }
+
+    @Bean
+    public R2dbcEntityTemplate entityTemplate() {
+        return new R2dbcEntityTemplate(connectionFactory());
+    }
 }
