@@ -52,8 +52,13 @@ public class EnterpriseController {
             return "enterprises/edit";
         }
 
-        enterprise.setId(id);
-        enterpriseService.save(enterprise);
+        Enterprise updatedEnterprise = enterpriseService.findById(id);
+
+        updatedEnterprise.setName(enterprise.getName());
+        updatedEnterprise.setCity(enterprise.getCity());
+        updatedEnterprise.setTimeZone(enterprise.getTimeZone());
+
+        enterpriseService.save(updatedEnterprise);
         return "redirect:/enterprises";
     }
 }

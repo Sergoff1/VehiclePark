@@ -1,5 +1,6 @@
 package ru.lessons.my.controller.rest;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -154,6 +155,8 @@ public class VehicleRestController {
     }
 
     @DeleteMapping("/{id}")
+    //Зло, оставил на время для проверки
+    @Transactional
     public ResponseEntity<?> delete(@PathVariable("id") long id) {
         Manager manager = securityUtils.getCurrentManager();
 
