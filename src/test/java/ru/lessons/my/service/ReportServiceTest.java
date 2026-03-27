@@ -3,8 +3,6 @@ package ru.lessons.my.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Controller;
 import ru.lessons.my.BaseIntegrationTest;
 import ru.lessons.my.model.Report;
 import ru.lessons.my.model.ReportPeriod;
@@ -13,7 +11,6 @@ import ru.lessons.my.model.ReportType;
 import java.time.LocalDate;
 import java.util.Map;
 
-@ComponentScan(excludeFilters = @ComponentScan.Filter(Controller.class))
 public class ReportServiceTest extends BaseIntegrationTest {
 
     @Autowired

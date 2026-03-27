@@ -22,11 +22,12 @@ import java.time.format.DateTimeFormatter;
 @ComponentScan(
         value = "ru.lessons.my",
         excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ShellApp.class)
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ShellApp.class),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "ru\\.lessons\\.my\\.config\\..*")
         }
 )
 @EnableCaching
-public class BaseConfig {
+public class BaseTestConfig {
 
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
