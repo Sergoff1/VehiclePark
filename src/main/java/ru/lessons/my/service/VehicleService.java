@@ -77,8 +77,12 @@ public class VehicleService {
         return vehicle;
     }
 
+    @Transactional
     public void deleteById(Long id) {
-        vehicleRepository.deleteById(id);
+        Vehicle v = vehicleRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(String.format("Vehicle with id %s not found", id)));
+
+        vehicleRepository.delete(v);
     }
 
     public void delete(Vehicle vehicle) {

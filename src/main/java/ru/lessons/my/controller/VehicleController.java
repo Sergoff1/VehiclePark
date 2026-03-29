@@ -1,6 +1,5 @@
 package ru.lessons.my.controller;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.geojson.Feature;
@@ -181,11 +180,11 @@ public class VehicleController {
     }
 
     @GetMapping("/delete/{id}")
-    @Transactional
+    //todo организовать нормальное удаление.
     public String deleteVehicle(@PathVariable("id") long id) {
         Vehicle vehicle = vehicleService.findById(id);
-        vehicleService.delete(vehicle);
         long enterpriseId = vehicle.getEnterprise().getId();
+        vehicleService.deleteById(id);
         return "redirect:/vehicles?enterpriseId=" + enterpriseId;
     }
 
