@@ -36,6 +36,8 @@ dependencies {
     implementation("com.opencsv:opencsv:5.12.0")
     implementation("com.itextpdf:itext-core:9.3.0")
 
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
+
     implementation("io.opentelemetry:opentelemetry-api:1.58.0")
     implementation("io.opentelemetry:opentelemetry-sdk:1.58.0")
     implementation("io.opentelemetry.semconv:opentelemetry-semconv:1.37.0")

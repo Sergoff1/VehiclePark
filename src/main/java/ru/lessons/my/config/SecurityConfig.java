@@ -38,6 +38,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/reactive/**").permitAll()
                         .requestMatchers("/api/v1/login").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/api/**").access(hasScope("API"))
                         .anyRequest()
                         .authenticated())
