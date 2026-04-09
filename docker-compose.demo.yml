@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    container_name: VP_db
+    command: postgres -c max_connections=150
+    environment:
+      - POSTGRES_DB=vehiclePark
+      - POSTGRES_USER=park
+      - POSTGRES_PASSWORD=park_dev
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U park -d vehiclePark" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  app:
+    container_name: VP_app
+    image: sergoff/vehicle-park:v1
+    ports:
+      - 8080:8080
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=vehiclePark
+      - DB_USER=park
+      - DB_PASSWORD=park_dev
+      - HBM2DDL=validate
+      - JAVA_OPTS=-Duser.timezone=UTC
+      - JAVA_TOOL_OPTIONS=-javaagent:/opt/agent/opentelemetry-javaagent.jar
+      - OTEL_METRICS_EXPORTER=prometheus
+      - OTEL_LOGS_EXPORTER=none
+      - OTEL_TRACES_EXPORTER=none
+      - OTEL_SERVICE_NAME=vehiclePark
+      - GH_KEY=${GH_KEY}
+      - TG_BOT_NAME=${TG_BOT_NAME}
+      - TG_BOT_TOKEN=${TG_BOT_TOKEN}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    volumes:
+      - ./monitoring/provisioning:/etc/grafana/provisioning
+    ports:
+      - 3000:3000
